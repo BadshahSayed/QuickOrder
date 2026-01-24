@@ -54,5 +54,14 @@ export const PRODUCTS: Product[] = [
         price: 955,
         image: "/assets/products/umbrella-open.jpg",
         images: ["/assets/products/umbrella-open.jpg", "/assets/products/umbrella-front.jpg", "/assets/products/catalog-2.jpg"]
+    },
+    {
+        id: 6,
+        // New Product
+        name: "Bombay Gymkhana Key Chain",
+        description: "STYLISH BRASS KEY CHAIN A Sleek black-and-gold key chain embossed with Bombay Gymkhana's 150-Year logo.Stylish,durable, and perfect for everyday use or thoughtful gifting",
+        price: 488,
+        image: "/assets/products/KeyChain.jpg",
+        images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
     }
 ];
