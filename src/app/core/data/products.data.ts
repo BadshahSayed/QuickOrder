@@ -65,7 +65,7 @@ export const PRODUCTS: Product[] = [
         images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
     },
     {
-        id: 6,
+        id: 7,
         // New Product
         name: "Bombay Gymkhana Stamp",
         description: "150TH ANNIVERSARY OF BOMBAY GYMKHANA Stamp",
