@@ -1,0 +1,158 @@
+<div class="bg-gray-50 py-12">
+    <div class="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
+        <h2 class="sr-only">Checkout</h2>
+
+        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+            <div>
+                <div>
+                    <h2 class="text-lg font-medium text-gray-900">Contact Information</h2>
+                    <div class="mt-4">
+                        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <div class="mt-1">
+                            <input type="text" id="name" formControlName="name"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                            @if (checkoutForm.get('name')?.invalid && checkoutForm.get('name')?.touched) {
+                            <p class="mt-1 text-sm text-red-600">Name is required.</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label for="mobile" class="block text-sm font-medium text-gray-700">Mobile Number</label>
+                        <div class="mt-1">
+                            <input type="tel" id="mobile" formControlName="mobile"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                            @if (checkoutForm.get('mobile')?.invalid && checkoutForm.get('mobile')?.touched) {
+                            <p class="mt-1 text-sm text-red-600">Valid 10-digit mobile number is required.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10 border-t border-gray-200 pt-10">
+                    <h2 class="text-lg font-medium text-gray-900">Delivery Method</h2>
+                    <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                        <label [class.border-indigo-500]="deliveryMode === 'PICKUP'"
+                            class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                            <input type="radio" formControlName="deliveryMode" value="PICKUP" class="sr-only">
+                            <span class="flex flex-1">
+                                <span class="flex flex-col">
+                                    <span class="block text-sm font-medium text-gray-900">Club House Pickup</span>
+                                    <span class="mt-1 flex items-center text-sm text-gray-500">Pick up from store</span>
+                                    <span class="mt-6 text-sm font-medium text-gray-900">₹0.00</span>
+                                </span>
+                            </span>
+                            <span [class.text-indigo-600]="deliveryMode === 'PICKUP'"
+                                [class.text-transparent]="deliveryMode !== 'PICKUP'"
+                                class="pointer-events-none absolute -inset-px rounded-lg border-2"
+                                aria-hidden="true"></span>
+                        </label>
+
+                        <label [class.border-indigo-500]="deliveryMode === 'DELIVERY'"
+                            class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                            <input type="radio" formControlName="deliveryMode" value="DELIVERY" class="sr-only">
+                            <span class="flex flex-1">
+                                <span class="flex flex-col">
+                                    <span class="block text-sm font-medium text-gray-900">Home Delivery</span>
+                                    <span class="mt-1 flex items-center text-sm text-gray-500">Within 5km radius</span>
+                                    <span class="mt-6 text-sm font-medium text-gray-900">₹{{ deliveryFee }}.00</span>
+                                </span>
+                            </span>
+                            <span [class.text-indigo-600]="deliveryMode === 'DELIVERY'"
+                                [class.text-transparent]="deliveryMode !== 'DELIVERY'"
+                                class="pointer-events-none absolute -inset-px rounded-lg border-2"
+                                aria-hidden="true"></span>
+                        </label>
+                    </div>
+                </div>
+
+                @if (deliveryMode === 'DELIVERY') {
+                <div class="mt-10 border-t border-gray-200 pt-10">
+                    <h2 class="text-lg font-medium text-gray-900">Shipping Address</h2>
+                    <div class="mt-4">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                        <div class="mt-1">
+                            <textarea id="address" rows="4" formControlName="address"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border"></textarea>
+                            @if (checkoutForm.get('address')?.invalid && checkoutForm.get('address')?.touched) {
+                            <p class="mt-1 text-sm text-red-600">Address is required for delivery.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Order Summary -->
+            <div class="mt-10 lg:mt-0">
+                <h2 class="text-lg font-medium text-gray-900">Order Summary</h2>
+                <div class="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
+                    <h3 class="sr-only">Items in your cart</h3>
+                    <ul role="list" class="divide-y divide-gray-200">
+                        @for (item of cartItems(); track item.product.id) {
+                        <li class="flex px-4 py-6 sm:px-6">
+                            <div class="flex-shrink-0">
+                                <img [src]="item.product.image" class="w-20 rounded-md">
+                            </div>
+                            <div class="ml-6 flex flex-1 flex-col">
+                                <div class="flex">
+                                    <div class="min-w-0 flex-1">
+                                        <h4 class="text-sm">
+                                            <a href="#" class="font-medium text-gray-700 hover:text-gray-800">{{
+                                                item.product.name }}</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="flex flex-1 items-end justify-between pt-2">
+                                    <p class="mt-1 text-sm font-medium text-gray-900">{{ item.product.price |
+                                        currency:'INR' }} x {{ item.quantity }}</p>
+                                </div>
+                            </div>
+                        </li>
+                        }
+                    </ul>
+                    <dl class="space-y-6 border-t border-gray-200 px-4 py-6 sm:px-6">
+                        <div class="flex items-center justify-between">
+                            <dt class="text-sm">Subtotal</dt>
+                            <dd class="text-sm font-medium text-gray-900">{{ subtotal() | currency:'INR' }}</dd>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <dt class="text-sm">Delivery</dt>
+                            <dd class="text-sm font-medium text-gray-900">{{ (deliveryMode === 'DELIVERY' ? deliveryFee
+                                : 0) | currency:'INR' }}</dd>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-gray-200 pt-6">
+                            <dt class="text-base font-medium">Total</dt>
+                            <dd class="text-base font-medium text-gray-900">{{ total() | currency:'INR' }}</dd>
+                        </div>
+                    </dl>
+
+                    <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
+                        @if (checkoutForm.invalid && (checkoutForm.touched || checkoutForm.dirty)) {
+                        <div class="mb-4 rounded-md bg-red-50 p-4">
+                            <div class="flex">
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">Please complete required fields:</h3>
+                                    <div class="mt-2 text-sm text-red-700">
+                                        <ul role="list" class="list-disc pl-5 space-y-1">
+                                            @if (checkoutForm.get('name')?.invalid) { <li>Full Name is required</li> }
+                                            @if (checkoutForm.get('mobile')?.invalid) { <li>Valid Mobile Number (10-12
+                                                digits) is required</li> }
+                                            @if (checkoutForm.get('address')?.invalid) { <li>Address is required for
+                                                Home Delivery</li> }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        }
+
+                        <button type="submit" [disabled]="checkoutForm.invalid || cartItems().length === 0"
+                            class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Pay Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

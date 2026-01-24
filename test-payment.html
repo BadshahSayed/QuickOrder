@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ICICI Payment Test</title>
+</head>
+
+<body>
+    <h1>ICICI EazyPay Test</h1>
+    <p>Click the button to test connection to ICICI EazyPay.</p>
+
+    <!-- Using the exact encrypted values from our verification script -->
+    <a href="https://eazypay.icicibank.com/EazyPG?merchantid=380786&mandatory%20fields=5PtTmYnhqH4RQ9Kt%2FRkae7YVOQC%2FUQPY7eMYrN4%2B1zgQdKwYUcFijIcrsg1oPKs03uY7sitnotnIKpxOJJI1hg%3D%3D&optional%20fields=&returnurl=qzEcjao6tN4tcG2t5XbaDhk2SmavTonukDqFmPmgR3A%3D&Reference%20No=vsDgyq5NZdcUadSXIMAA4Q%3D%3D&submerchantid=NoW5C7PeKlfFVNZBKFk3kQ%3D%3D&transaction%20amount=muzVBtjaDrIVYv9WtZpJng%3D%3D&paymode=6tAUgQwCh8FuTwt0A18mnw%3D%3D"
+        target="_blank">
+        <button style="padding: 20px; font-size: 20px;">Pay 10 INR (Link Method)</button>
+    </a>
+
+    <br><br>
+
+    <!-- Alternative: Try Form Post -->
+    <form action="https://eazypay.icicibank.com/EazyPG" method="POST" target="_blank">
+        <input type="hidden" name="merchantid" value="380786">
+        <input type="hidden" name="mandatory fields"
+            value="5PtTmYnhqH4RQ9Kt/Rkae7YVOQC/UQPY7eMYrN4+1zgQdKwYUcFijIcrsg1oPKs03uY7sitnotnIKpxOJJI1hg==">
+        <input type="hidden" name="optional fields" value="">
+        <input type="hidden" name="returnurl" value="qzEcjao6tN4tcG2t5XbaDhk2SmavTonukDqFmPmgR3A=">
+        <input type="hidden" name="Reference No" value="vsDgyq5NZdcUadSXIMAA4Q==">
+        <input type="hidden" name="submerchantid" value="NoW5C7PeKlfFVNZBKFk3kQ==">
+        <input type="hidden" name="transaction amount" value="muzVBtjaDrIVYv9WtZpJng==">
+        <input type="hidden" name="paymode" value="6tAUgQwCh8FuTwt0A18mnw==">
+
+        <button type="submit" style="padding: 20px; font-size: 20px;">Pay 10 INR (Form POST Method)</button>
+    </form>
+</body>
+
+</html>

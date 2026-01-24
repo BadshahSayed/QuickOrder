@@ -1,0 +1,105 @@
+<div class="bg-white px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+    <div class="mx-auto max-w-3xl">
+        <div class="max-w-xl">
+            @if (loading) {
+            <div class="p-4 mb-4 text-blue-800 bg-blue-100 rounded-lg">
+                Verifying your payment... please wait.
+            </div>
+            }
+            @if (error) {
+            <div class="p-4 mb-4 text-red-800 bg-red-100 rounded-lg">
+                {{ error }} <a routerLink="/" class="underline">Return Home</a>
+            </div>
+            }
+
+            @if (!loading && !error) {
+            <h1 class="text-base font-medium text-indigo-600">Thank you!</h1>
+            <p class="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">It's on the way!</p>
+            <p class="mt-2 text-base text-gray-500">Your order has been processed and will be with you shortly.</p>
+
+            <dl class="mt-12 text-sm font-medium">
+                <dt class="text-gray-900">Order Number</dt>
+                <dd class="text-indigo-600 mt-2">#{{ order?.id || 'ORD-' + (now | date:'mmss') }}</dd>
+            </dl>
+            }
+        </div>
+
+        <div class="mt-10 border-t border-gray-200">
+            <h2 class="sr-only">Your order</h2>
+
+            <h3 class="sr-only">Items</h3>
+            @if (order) {
+            @for (item of order.items; track item.product.id) {
+            <div class="flex space-x-6 border-b border-gray-200 py-10">
+                <img [src]="item.product.image"
+                    class="h-20 w-20 flex-none rounded-lg bg-gray-100 object-cover object-center sm:h-40 sm:w-40">
+                <div class="flex flex-auto flex-col">
+                    <div>
+                        <h4 class="font-medium text-gray-900">
+                            <a href="#">{{ item.product.name }}</a>
+                        </h4>
+                        <p class="mt-2 text-sm text-gray-600">{{ item.product.description }}</p>
+                    </div>
+                    <div class="mt-6 flex flex-1 items-end">
+                        <dl class="flex space-x-4 divide-x divide-gray-200 text-sm sm:space-x-6">
+                            <div class="flex">
+                                <dt class="font-medium text-gray-900">Quantity</dt>
+                                <dd class="ml-2 text-gray-700">{{ item.quantity }}</dd>
+                            </div>
+                            <div class="flex pl-4 sm:pl-6">
+                                <dt class="font-medium text-gray-900">Price</dt>
+                                <dd class="ml-2 text-gray-700">{{ item.product.price | currency:'INR' }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            }
+
+            <div class="sm:ml-40 sm:pl-6">
+                <dl class="grid grid-cols-2 gap-x-6 border-t border-gray-200 py-10 text-sm">
+                    <div>
+                        <dt class="font-medium text-gray-900">Delivery address</dt>
+                        <dd class="mt-2 text-gray-700">
+                            <address class="not-italic">
+                                <span class="block">{{ order.customerName }}</span>
+                                <span class="block">{{ order.customerAddress || 'Pickup at Store' }}</span>
+                                <span class="block">{{ order.customerMobile }}</span>
+                            </address>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="font-medium text-gray-900">Payment Status</dt>
+                        <dd class="mt-2 text-gray-700">
+                            <p class="text-green-600 font-bold uppercase">{{ order.status }}</p>
+                            @if (order.paymentId) {
+                            <p class="text-xs text-gray-500 mt-1">ID: {{ order.paymentId }}</p>
+                            }
+                        </dd>
+                    </div>
+                </dl>
+
+                <dl class="space-y-6 border-t border-gray-200 pt-10 text-sm">
+                    <div class="flex justify-between">
+                        <dt class="font-medium text-gray-900">Subtotal</dt>
+                        <dd class="text-gray-700">{{ order.subtotal | currency:'INR' }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="font-medium text-gray-900">Delivery</dt>
+                        <dd class="text-gray-700">{{ order.deliveryCharge | currency:'INR' }}</dd>
+                    </div>
+                    <div class="flex justify-between pl-4 sm:pl-6 pt-6 border-t border-gray-200">
+                        <dt class="text-base font-medium text-gray-900">Total</dt>
+                        <dd class="text-base font-medium text-gray-900">{{ order.total | currency:'INR' }}</dd>
+                    </div>
+                </dl>
+            </div>
+            }
+
+            <div class="mt-16 border-t border-gray-200 py-6 text-right">
+                <a routerLink="/" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Continue Shopping
+                    <span aria-hidden="true"> &rarr;</span></a>
+            </div>
+        </div>
+    </div>
+</div>

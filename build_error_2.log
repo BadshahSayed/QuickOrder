@@ -1,0 +1,20 @@
+
+> quick-order@0.0.0 build
+> ng build
+
+[33m❯[39m Building...
+[32m✔[39m Building...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m          [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-3TYGN3UO.js[39m  [2m | [22m[2m-[22m              [2m | [22m[36m246.04 kB[39m[2m | [22m               [36m68.13 kB[39m
+[32mmain-PV5ZWIT2.js[39m   [2m | [22m[2mmain[22m           [2m | [22m [36m67.10 kB[39m[2m | [22m               [36m15.91 kB[39m
+[32mstyles-F6NXUJBW.css[39m[2m | [22m[2mstyles[22m         [2m | [22m [36m23.20 kB[39m[2m | [22m                [36m4.19 kB[39m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m  [2m | [22m[1m336.35 kB[22m[2m | [22m               [1m88.23 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m          [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-IDVLYRJI.js[39m  [2m | [22m[2mproduct-details[22m[2m | [22m  [36m5.49 kB[39m[2m | [22m                [36m1.83 kB[39m
+
+Application bundle generation complete. [19.890 seconds] - 2026-01-21T06:33:32.479Z
+
+Output location: D:\OnePageWebistes\quick-order\dist\quick-order
+

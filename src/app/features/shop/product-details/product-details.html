@@ -1,0 +1,90 @@
+<div class="min-h-screen py-8">
+    @if (product(); as product) {
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:grid-cols-2 lg:gap-x-8">
+            <!-- Image Gallery (Left Column) -->
+            <div class="flex flex-col-reverse">
+                <!-- Image Wrapper -->
+                <div
+                    class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm p-4">
+                    <img [src]="selectedImage()" [alt]="product.name"
+                        class="h-full w-full object-contain object-center sm:rounded-lg" style="max-height: 500px;">
+                </div>
+
+                <!-- Image Selector (Thumbnails) -->
+                @if (product.images && product.images.length > 0) {
+                <div class="mx-auto mt-6 w-full max-w-2xl block lg:max-w-none">
+                    <div class="grid grid-cols-4 gap-6" aria-orientation="horizontal" role="tablist">
+                        @for (image of product.images; track image) {
+                        <button type="button" (click)="selectImage(image)"
+                            class="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
+                            [class.ring-2]="selectedImage() === image"
+                            [class.ring-indigo-500]="selectedImage() === image"
+                            [class.ring-transparent]="selectedImage() !== image">
+                            <span class="sr-only">{{ product.name }} image</span>
+                            <span class="absolute inset-0 overflow-hidden rounded-md border border-gray-200">
+                                <img [src]="image" alt="" class="h-full w-full object-contain object-center">
+                            </span>
+                        </button>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Product Info (Right Column) -->
+            <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ product.name }}</h1>
+
+                <div class="mt-3">
+                    <h2 class="sr-only">Product information</h2>
+                    <p class="text-3xl tracking-tight text-gray-900">{{ product.price | currency:'INR' }}</p>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="sr-only">Description</h3>
+                    <div class="space-y-6 text-base text-gray-700 leading-relaxed">
+                        <p>{{ product.description }}</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex flex-col space-y-4">
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button type="button" (click)="addToCart()"
+                            class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full transition-transform active:scale-95">
+                            {{ isAddedToCart() ? 'Added to Cart!' : 'Add to Cart' }}
+                        </button>
+
+                        <button type="button" routerLink="/cart"
+                            class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-amber-500 px-8 py-3 text-base font-medium text-white hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">
+                            Go to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Features / Specs Placeholder -->
+                <section aria-labelledby="details-heading" class="mt-12">
+                    <h2 id="details-heading" class="sr-only">Additional Details</h2>
+                    <div class="divide-y divide-gray-200 border-t border-gray-200">
+                        <div class="py-6">
+                            <h3 class="text-sm font-medium text-gray-900">Features</h3>
+                            <div class="prose prose-sm mt-4 text-gray-500">
+                                <ul role="list">
+                                    <li>Official Bombay Gymkhana Merchandise</li>
+                                    <li>Premium Quality Material</li>
+                                    <li>Exclusive 150 Years Anniversary Edition</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    } @else {
+    <div class="text-center py-20">
+        <p class="text-xl text-gray-500">Loading product details...</p>
+    </div>
+    }
+</div>
