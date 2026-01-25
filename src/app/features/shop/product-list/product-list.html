@@ -1,6 +1,6 @@
 <div class="min-h-screen">
     <div class="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
-        <h2 class="text-3xl font-bold tracking-tight text-white mb-6 drop-shadow-md">Featured Products</h2>
+        <h2 class="text-3xl font-bold tracking-tight text-blue mb-6 drop-shadow-md">Featured Products</h2>
 
         @if (products$ | async; as products) {
         <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
@@ -23,10 +23,7 @@
                 </div>
                 <div class="flex flex-1 flex-col p-4">
                     <h3 class="text-lg font-medium text-gray-900">
-                        <a href="#">
-                            <span aria-hidden="true" class="absolute inset-0"></span>
-                            {{ product.name }}
-                        </a>
+                        {{ product.name }}
                     </h3>
                     <p class="mt-1 text-sm text-gray-500 line-clamp-2">{{ product.description }}</p>
                     <div class="mt-4 flex flex-1 items-end justify-between">

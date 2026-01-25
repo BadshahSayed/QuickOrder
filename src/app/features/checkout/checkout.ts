@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
@@ -24,6 +24,9 @@ export class CheckoutComponent {
 
   deliveryFee = 50;
 
+  // Signal to track delivery mode for reactive total calculation
+  deliveryModeSignal = signal<'PICKUP' | 'DELIVERY'>('PICKUP');
+
   checkoutForm = this.fb.group({
     name: ['', Validators.required],
     mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10,12}$')]], // Allow 10-12 digits
@@ -31,9 +34,9 @@ export class CheckoutComponent {
     address: ['']
   });
 
-  // Derived state for total
+  // Derived state for total - now reactive with signal
   total = computed(() => {
-    const mode = this.checkoutForm.get('deliveryMode')?.value;
+    const mode = this.deliveryModeSignal();
     const delivery = mode === 'DELIVERY' ? this.deliveryFee : 0;
     return this.subtotal() + delivery;
   });
@@ -41,6 +44,9 @@ export class CheckoutComponent {
   constructor() {
     // React to delivery mode changes to update validators or state if needed
     this.checkoutForm.get('deliveryMode')?.valueChanges.subscribe(mode => {
+      // Update the signal to make total reactive
+      this.deliveryModeSignal.set(mode as 'PICKUP' | 'DELIVERY');
+
       const addressControl = this.checkoutForm.get('address');
       if (mode === 'DELIVERY') {
         addressControl?.setValidators([Validators.required]);

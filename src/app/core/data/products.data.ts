@@ -56,7 +56,7 @@ export const PRODUCTS: Product[] = [
         images: ["/assets/products/umbrella-open.jpg", "/assets/products/umbrella-front.jpg", "/assets/products/catalog-2.jpg"]
     },
     {
-        id: 6,
+        id: 7,
         // New Product
         name: "Bombay Gymkhana Key Chain",
         description: "STYLISH BRASS KEY CHAIN A Sleek black-and-gold key chain embossed with Bombay Gymkhana's 150-Year logo.Stylish,durable, and perfect for everyday use or thoughtful gifting",
@@ -65,12 +65,12 @@ export const PRODUCTS: Product[] = [
         images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
     },
     {
-        id: 7,
+        id: 8,
         // New Product
         name: "Bombay Gymkhana Stamp",
         description: "150TH ANNIVERSARY OF BOMBAY GYMKHANA Stamp",
         price: 1,
-        image: "/assets/products/KeyChain.jpg",
+        image: "/assets/products/BGM-Stamp.jpg",
         images: ["/assets/products/BGM-Stamp.jpg"]
     }
 ];

@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Order } from '../models/product.model';
 import { CartService } from './cart.service';
-import emailjs from '@emailjs/browser';
 import * as CryptoJS from 'crypto-js';
 
 @Injectable({
@@ -21,17 +20,13 @@ export class OrderService {
 
     // URL Toggle
     private isUat = false; // Set to true to test UAT if Prod is blocked
-    private useMockPayment = false; // Set to true to simulate payment locally
+    private useMockPayment = false; // Set to true to simulate payment locally - ENABLED FOR TESTING
     private contentUrlProd = 'https://eazypay.icicibank.com/EazyPG';
     private contentUrlUat = 'https://eazypayuat.icicibank.com/EazyPG';
 
     private get paymentBaseUrl() {
         return this.isUat ? this.contentUrlUat : this.contentUrlProd;
     }
-
-    private emailJsPublicKey = 'YOUR_EMAILJS_PUBLIC_KEY';
-    private emailJsServiceId = 'YOUR_SERVICE_ID';
-    private emailJsTemplateId = 'YOUR_TEMPLATE_ID';
 
     constructor() { }
 
@@ -150,34 +145,97 @@ export class OrderService {
     }
 
     private processSuccess(order: Order) {
+        console.log('🎯 Processing successful order:', order.id);
+
         order.status = 'PAID';
+        console.log('✅ Order status set to PAID');
+
         this.cartService.clearCart();
+        console.log('🛒 Cart cleared');
+
         // Send Email
         this.sendEmailNotification(order);
+        console.log('📧 Email notification triggered');
+
         this.router.navigate(['/order-success'], { state: { order } });
+        console.log('🔄 Navigating to order success page');
     }
 
-    private sendEmailNotification(order: Order) {
-        // Note: In a real app, do this on the backend!
-        // For this frontend-only demo, we use EmailJS directly.
+    private async sendEmailNotification(order: Order) {
+        // Using Web3Forms - Free service, no signup required
+        // Get your free access key from: https://web3forms.com/
+        const adminEmail = 'badshahsayed2010@gmail.com';
+        const web3formsAccessKey = '4407c9bf-af53-4148-9132-5b77df6a4fbc';
 
-        if (this.emailJsPublicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-            console.log('EmailJS keys not set. Skipping email.', order);
-            return;
-        }
+        try {
+            console.log('📧 Sending order notification email to admin...');
 
-        const templateParams = {
-            to_name: order.customerName,
-            order_id: order.id || 'N/A',
-            amount: order.total,
-            items_summary: order.items.map(i => `${i.product.name} x${i.quantity}`).join(', ')
-        };
+            const formData = new FormData();
+            formData.append('access_key', web3formsAccessKey);
+            formData.append('subject', `🛍️ New Order #${order.id} - ${order.customerName}`);
+            formData.append('from_name', 'QuickOrder - Bombay Gymkhana');
+            formData.append('to', adminEmail);
+            formData.append('message', this.formatOrderEmail(order));
 
-        emailjs.send(this.emailJsServiceId, this.emailJsTemplateId, templateParams, this.emailJsPublicKey)
-            .then((response) => {
-                console.log('Email sent!', response.status, response.text);
-            }, (err) => {
-                console.error('Email failed...', err);
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
             });
+
+            const result = await response.json();
+            if (result.success) {
+                console.log('✅ Email notification sent successfully to admin!');
+            } else {
+                console.error('❌ Email sending failed:', result);
+            }
+        } catch (error) {
+            console.error('❌ Error sending email:', error);
+        }
+    }
+
+    private formatOrderEmail(order: Order): string {
+        const deliveryAction = order.deliveryMode === 'DELIVERY' ? 'Home Delivery' : 'Club House Pickup';
+        const itemsList = order.items.map(item =>
+            `- ${item.product.name} x ${item.quantity} = ₹${(item.product.price * item.quantity).toFixed(2)}`
+        ).join('\n');
+
+        return `
+═══════════════════════════════════════
+🛍️ NEW ORDER RECEIVED
+═══════════════════════════════════════
+
+ORDER DETAILS:
+--------------
+Order ID: ${order.id || 'N/A'}
+Order Date: ${order.createdAt.toLocaleString('en-IN')}
+Status: ${order.status}
+
+CUSTOMER INFORMATION:
+--------------------
+Name: ${order.customerName}
+Mobile: ${order.customerMobile}
+Address: ${order.customerAddress || 'N/A (Pickup from Club)'}
+
+DELIVERY METHOD:
+---------------
+${deliveryAction}
+
+PRODUCTS ORDERED:
+----------------
+${itemsList}
+
+ORDER SUMMARY:
+-------------
+Subtotal:        ₹${order.subtotal.toFixed(2)}
+Delivery Charge: ₹${order.deliveryCharge.toFixed(2)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL AMOUNT:    ₹${order.total.toFixed(2)}
+
+═══════════════════════════════════════
+⚡ Action Required: ${deliveryAction === 'Home Delivery' ? 'Prepare order for delivery' : 'Prepare order for pickup'}
+═══════════════════════════════════════
+
+This is an automated notification from QuickOrder.
+        `.trim();
     }
 }
