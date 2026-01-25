@@ -173,7 +173,7 @@ export class OrderService {
             const formData = new FormData();
             formData.append('access_key', web3formsAccessKey);
             formData.append('subject', `🛍️ New Order #${order.id} - ${order.customerName}`);
-            formData.append('from_name', 'QuickOrder - Bombay Gymkhana');
+            formData.append('from_name', 'MyGymkhanaStore - Bombay Gymkhana');
             formData.append('to', adminEmail);
             formData.append('message', this.formatOrderEmail(order));
 
@@ -212,6 +212,7 @@ Status: ${order.status}
 
 CUSTOMER INFORMATION:
 --------------------
+Member ID: ${order.customerMemberId}
 Name: ${order.customerName}
 Mobile: ${order.customerMobile}
 Address: ${order.customerAddress || 'N/A (Pickup from Club)'}
@@ -235,7 +236,7 @@ TOTAL AMOUNT:    ₹${order.total.toFixed(2)}
 ⚡ Action Required: ${deliveryAction === 'Home Delivery' ? 'Prepare order for delivery' : 'Prepare order for pickup'}
 ═══════════════════════════════════════
 
-This is an automated notification from QuickOrder.
+This is an automated notification from MyGymkhanaStore.
         `.trim();
     }
 }

@@ -28,6 +28,7 @@ export class CheckoutComponent {
   deliveryModeSignal = signal<'PICKUP' | 'DELIVERY'>('PICKUP');
 
   checkoutForm = this.fb.group({
+    memberid: ['', Validators.required],
     name: ['', Validators.required],
     mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10,12}$')]], // Allow 10-12 digits
     deliveryMode: ['PICKUP', Validators.required],
@@ -69,6 +70,7 @@ export class CheckoutComponent {
     const deliveryCharge = isDelivery ? this.deliveryFee : 0;
 
     const order: Order = {
+      customerMemberId: formVal.memberid!,
       customerName: formVal.name!,
       customerMobile: formVal.mobile!,
       customerAddress: formVal.address || undefined,

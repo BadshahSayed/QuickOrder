@@ -15,6 +15,7 @@ export interface CartItem {
 
 export interface Order {
     id?: string;
+    customerMemberId: string;
     customerName: string;
     customerMobile: string;
     customerAddress?: string; // Optional if pickup
