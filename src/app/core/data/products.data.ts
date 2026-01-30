@@ -49,12 +49,13 @@ export const PRODUCTS: Product[] = [
     {
         id: 7,
         // New Product
-        name: "Bombay Gymkhana Key Chain",
-        description: "A sleek black-and-gold key chain with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
-        price: 488,
-        image: "/assets/products/KeyChain.jpg",
-        images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
+        name: "Ladies Umbrella",
+        description: "A slightly smaller, lightweight, and durable umbrella with quick-dry fabric and a comfortable grip, ideal for everyday rain or sun protection",
+        price: 825,
+        image: "/assets/products/umbrella-open.jpg",
+        images: ["/assets/products/umbrella-open.jpg", "/assets/products/umbrella-front.jpg", "/assets/products/catalog-2.jpg"]
     },
+
     {
         id: 8,
         // New Product
@@ -67,10 +68,30 @@ export const PRODUCTS: Product[] = [
     {
         id: 9,
         // New Product
-        name: "Ladies Umbrella",
+        name: "Bombay Gymkhana Key Chain",
+        description: "A sleek black-and-gold key chain with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
+        price: 488,
+        image: "/assets/products/KeyChain.jpg",
+        images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
+    },
+
+    {
+        id: 10,
+        // New Product
+        name: "First Day Cover",
         description: "A slightly smaller, lightweight, and durable umbrella with quick-dry fabric and a comfortable grip, ideal for everyday rain or sun protection",
-        price: 825,
-        image: "/assets/products/umbrella-open.jpg",
-        images: ["/assets/products/umbrella-open.jpg", "/assets/products/umbrella-front.jpg", "/assets/products/catalog-2.jpg"]
+        price: 25,
+        image: "/assets/products/Firstday-Cover.jpg",
+        images: ["/assets/products/Firstday-Cover.jpg", "/assets/products/Firstday-Cover.jpg", "/assets/products/catalog-2.jpg"]
+    },
+
+    {
+        id: 11,
+        // New Product
+        name: "Brochure",
+        description: "Brochure - 150TH ANNIVERSARY OF BOMBAY GYMKHANA",
+        price: 15,
+        image: "/assets/products/Brouchure-1.jpg",
+        images: ["/assets/products/Brouchure-1.jpg", "/assets/products/Brouchure-2.jpg", "/assets/products/catalog-2.jpg"]
     }
 ];
