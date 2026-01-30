@@ -64,10 +64,12 @@ export class OrderService {
         // 1. Retrieve the pending order
         const pendingOrderJson = sessionStorage.getItem('pending_order');
         if (!pendingOrderJson) {
-            const msg = '❌ Verification Failed: No pending order found in session storage. Are you testing on Localhost but returning to Production?';
+            const msg = '❌ Verification Failed: No pending order found in session storage. Please ensure you are not switching browsers or using Incognito mode mid-payment.';
             console.error(msg);
-            alert(msg); // Alert for visibility during debug
+            alert(msg);
             return null;
+        } else {
+            // alert('Debug: Pending Order Found. Verifying...');
         }
 
         const order: Order = JSON.parse(pendingOrderJson);
@@ -208,14 +210,17 @@ export class OrderService {
             const result = await response.json();
             if (result.success) {
                 console.log('✅ Email notification sent successfully to admin!');
+                // alert('✅ Admin Email Sent Successfully!'); 
             } else {
                 console.error('❌ Email sending failed:', result);
+                alert('❌ Email Sending Failed: ' + JSON.stringify(result));
                 if (result.message && result.message.includes('rate limit')) {
-                    console.warn('Rate limit hit. Email might be delayed.');
+                    alert('⚠️ Email Rate Limit Hit. Please wait before retrying.');
                 }
             }
         } catch (error) {
             console.error('❌ Error sending email:', error);
+            alert('❌ Network/Code Error sending email: ' + error);
         }
     }
 
