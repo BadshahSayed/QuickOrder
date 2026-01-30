@@ -12,39 +12,30 @@ export const PRODUCTS: Product[] = [
     },
     {
         id: 2,
-        // Old Name: 150 Years Polo T-Shirt (White)
-        name: "Classic White Polo T-Shirt",
-        description: "The Polo T-Shirt - tailored fit, premium fabric, and a commemorative logo that celebrates the Club's heritage.",
+        // Merged Name: Classic Polo T-Shirt (White & Black)
+        name: "Classic Polo T-Shirt",
+        description: "The Polo T-Shirt - tailored fit, premium fabric, and a commemorative logo that celebrates the Club's heritage. Available in Classic White and Black.",
         price: 1150,
         image: "/assets/products/polo-white.jpg",
-        images: ["/assets/products/polo-white.jpg", "/assets/products/catalog-1.jpg"] // Added catalog image
-    },
-    {
-        id: 3,
-        // New Product
-        name: "Classic Black Polo T-Shirt",
-        description: "Premium fabric. Smart fit. The Polo T-Shirt is your go-to club merchandise essential; Tailored fit for a sharp, modern look.",
-        price: 1150,
-        image: "/assets/products/polo-black.jpg",
-        images: ["/assets/products/polo-black.jpg", "/assets/products/catalog-1.jpg"]
+        images: ["/assets/products/polo-white.jpg", "/assets/products/polo-black.jpg", "/assets/products/catalog-1.jpg"],
+        colors: [
+            { name: 'White', class: 'bg-white border-gray-200', code: '#ffffff', image: '/assets/products/polo-white.jpg' },
+            { name: 'Black', class: 'bg-black border-gray-900', code: '#000000', image: '/assets/products/polo-black.jpg' }
+        ],
+        sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL', '5XL']
     },
     {
         id: 4,
-        // Old Name: Commemorative Tie (Beige) -> Yellow Silk Tie
-        name: "Zodiac Collection: Yellow Silk Tie",
+        // Merged Name: Zodiac Collection: Silk Tie (Yellow & Black)
+        name: "Zodiac Collection: Silk Tie",
         description: "Skilfully woven in pure silk and finished with the exclusive 150 Years logo. A refined tribute to the Club's legacy.",
         price: 1665,
-        image: "/assets/products/tie-beige.jpg",
-        images: ["/assets/products/tie-beige.jpg", "/assets/products/catalog-2.jpg"]
-    },
-    {
-        id: 5,
-        // Old Name: Commemorative Tie (Blue) -> Black Silk Tie
-        name: "Zodiac Collection: Black Silk Tie",
-        description: "A premium silk tie with a smooth, luxurious feel, featuring the exclusive 150 Years logo to celebrate the Club's heritage.",
-        price: 1665,
-        image: "/assets/products/tie-blue.jpg",
-        images: ["/assets/products/tie-blue.jpg", "/assets/products/catalog-2.jpg"]
+        image: "/assets/products/tie-beige.jpg", // Yellow/Beige as default
+        images: ["/assets/products/tie-beige.jpg", "/assets/products/tie-blue.jpg", "/assets/products/catalog-2.jpg"],
+        colors: [
+            { name: 'Yellow', class: 'bg-yellow-200 border-yellow-300', code: '#fef3c7', image: '/assets/products/tie-beige.jpg' },
+            { name: 'Black', class: 'bg-gray-900 border-black', code: '#111827', image: '/assets/products/tie-blue.jpg' }
+        ]
     },
     {
         id: 6,

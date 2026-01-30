@@ -6,11 +6,15 @@ export interface Product {
     image: string;
     images?: string[];
     category?: string;
+    colors?: { name: string; class: string; code: string; image?: string }[];
+    sizes?: string[];
 }
 
 export interface CartItem {
     product: Product;
     quantity: number;
+    selectedColor?: string;
+    selectedSize?: string;
 }
 
 export interface Order {

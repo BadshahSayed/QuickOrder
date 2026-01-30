@@ -7,7 +7,7 @@
             @if (products$ | async; as products) {
             <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                 @for (product of products; track product.id) {
-                <div [routerLink]="['/shop/product', product.id]"
+                <div (click)="openProductDetails(product)"
                     class="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md hover:scale-105 duration-300 cursor-pointer">
                     <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-white relative p-4 h-80">
                         <!-- Front Image -->
@@ -44,15 +44,113 @@
     </div>
 </div>
 
-<!-- Confirmation Modal -->
-@if (showModal) {
-<div class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!-- Backdrop -->
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+<!-- Quick View Modal -->
+@if (showQuickView && selectedProduct) {
+<div class="relative z-50 transition-opacity ease-out duration-300" aria-labelledby="modal-title" role="dialog"
+    aria-modal="true">
+    <!-- Backdrop with blur -->
+    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true"
+        (click)="closeProductDetails()"></div>
 
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <!-- Modal Panel -->
+            <div
+                class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
+
+                <!-- Close Button -->
+                <div class="absolute right-4 top-4 z-10">
+                    <button type="button" (click)="closeProductDetails()"
+                        class="rounded-full bg-white/80 p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors focus:outline-none">
+                        <span class="sr-only">Close</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <!-- Image Section -->
+                    <div class="relative h-64 sm:h-96 lg:h-auto bg-gray-50 flex items-center justify-center p-8">
+                        <img [src]="currentImage" [alt]="selectedProduct.name"
+                            class="max-h-full max-w-full object-contain object-center transition-all duration-500 ease-in-out transform hover:scale-105">
+                    </div>
+
+                    <!-- Details Section -->
+                    <div class="flex flex-col p-8 sm:p-10 lg:p-12">
+                        <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-2">{{ selectedProduct.name }}</h2>
+                        <p class="text-2xl font-medium text-indigo-600 mb-6">{{ selectedProduct.price | currency:'INR'
+                            }}</p>
+
+                        <!-- Description -->
+                        <div class="prose prose-sm text-gray-500 mb-8">
+                            <p>{{ selectedProduct.description }}</p>
+                        </div>
+
+                        <!-- Color Selection -->
+                        @if (selectedProduct.colors && selectedProduct.colors.length > 0) {
+                        <div class="mb-6">
+                            <h3 class="text-sm font-medium text-gray-900 mb-3">Color</h3>
+                            <div class="flex items-center space-x-3">
+                                @for (color of selectedProduct.colors; track color.name) {
+                                <button type="button" (click)="selectColor(color)"
+                                    class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none transition-all duration-200"
+                                    [ngClass]="{'ring-2 ring-indigo-500 ring-offset-2': selectedColor?.name === color.name}">
+                                    <span class="sr-only">{{ color.name }}</span>
+                                    <span aria-hidden="true"
+                                        class="h-10 w-10 rounded-full border border-black border-opacity-10 transition-transform duration-200 hover:scale-110"
+                                        [style.backgroundColor]="color.code">
+                                    </span>
+                                </button>
+                                }
+                            </div>
+                            @if (selectedColor) {
+                            <p class="mt-2 text-sm text-gray-500">Selected: <span class="font-medium text-gray-900">{{
+                                    selectedColor.name }}</span></p>
+                            }
+                        </div>
+                        }
+
+                        <!-- Size Selection -->
+                        @if (selectedProduct.sizes && selectedProduct.sizes.length > 0) {
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-gray-900">Size</h3>
+                            </div>
+                            <div class="grid grid-cols-4 gap-3 sm:grid-cols-6">
+                                @for (size of selectedProduct.sizes; track size) {
+                                <button type="button" (click)="selectSize(size)"
+                                    class="group relative flex items-center justify-center rounded-md border py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 transition-all duration-200"
+                                    [ngClass]="selectedSize === size ? 'border-indigo-600 bg-indigo-50 text-indigo-600 ring-2 ring-indigo-600 ring-offset-1' : 'border-gray-200 text-gray-900 shadow-sm'">
+                                    <span>{{ size }}</span>
+                                </button>
+                                }
+                            </div>
+                        </div>
+                        }
+
+                        <!-- Add to Cart Button -->
+                        <div class="mt-auto">
+                            <button type="button" (click)="addToCartFromQuickView()"
+                                class="flex w-full items-center justify-center rounded-xl border border-transparent bg-indigo-600 px-8 py-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-300 shadow-lg hover:shadow-indigo-200">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Confirmation Modal (Original) -->
+@if (showModal) {
+<div class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <div
                 class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                 <div>
@@ -63,11 +161,11 @@
                         </svg>
                     </div>
                     <div class="mt-3 text-center sm:mt-5">
-                        <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Item Added to
-                            Cart</h3>
+                        <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Item Added to Cart
+                        </h3>
                         <div class="mt-2">
-                            <p class="text-sm text-gray-500">Would you like to proceed to checkout or continue
-                                shopping?</p>
+                            <p class="text-sm text-gray-500">Would you like to proceed to checkout or continue shopping?
+                            </p>
                         </div>
                     </div>
                 </div>
