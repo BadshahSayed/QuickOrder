@@ -69,5 +69,6 @@ export class CartService {
 
     clearCart() {
         this.cartItems.set([]);
+        localStorage.removeItem('cart'); // Force clear immediately
     }
 }
