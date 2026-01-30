@@ -194,9 +194,12 @@ export class OrderService {
     }
 
     private formatOrderEmail(order: Order): string {
+        const isMember = order.userType === 'MEMBER';
+        const userTypeStr = isMember ? 'Gymkhana Member' : 'Guest (Non-Member)';
         const deliveryAction = order.deliveryMode === 'DELIVERY' ? 'Home Delivery' : 'Club House Pickup';
+
         const itemsList = order.items.map(item =>
-            `- ${item.product.name} x ${item.quantity} = ₹${(item.product.price * item.quantity).toFixed(2)}`
+            `- ${item.product.name} (Size: ${item.selectedSize || 'N/A'}, Color: ${item.selectedColor || 'N/A'}) x ${item.quantity} = ₹${(item.product.price * item.quantity).toFixed(2)}`
         ).join('\n');
 
         return `
@@ -209,17 +212,26 @@ ORDER DETAILS:
 Order ID: ${order.id || 'N/A'}
 Order Date: ${order.createdAt.toLocaleString('en-IN')}
 Status: ${order.status}
+User Type: ${userTypeStr}
 
-CUSTOMER INFORMATION:
---------------------
+${isMember ? `
+MEMBER INFORMATION:
+-------------------
 Member ID: ${order.customerMemberId}
 Name: ${order.customerName}
 Mobile: ${order.customerMobile}
-Address: ${order.customerAddress || 'N/A (Pickup from Club)'}
+` : `
+GUEST INFORMATION:
+------------------
+Name: ${order.customerName}
+Mobile: ${order.customerMobile}
+Address: ${order.customerAddress}
+`}
 
 DELIVERY METHOD:
 ---------------
 ${deliveryAction}
+${order.deliveryMode === 'PICKUP' ? '(Customer will pick up from the Club House)' : `(Deliver to: ${order.customerAddress})`}
 
 PRODUCTS ORDERED:
 ----------------

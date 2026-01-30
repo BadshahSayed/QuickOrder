@@ -5,7 +5,7 @@ export const PRODUCTS: Product[] = [
         id: 1,
         // Old Name: Bombay Gymkhana Flask
         name: "Thermo-Steel Coffee Mug",
-        description: "A classy, well-finished mug designed to keep up with your day, featuring Milton durability and all-day temperature retention.",
+        description: "A classy, well-finished mug designed to keep up with your day, featuring Milton durability and all-day temperature retention",
         price: 620,
         image: "/assets/products/flask-front.jpg",
         images: ["/assets/products/flask-front.jpg", "/assets/products/flask-back.jpg"]
@@ -14,7 +14,7 @@ export const PRODUCTS: Product[] = [
         id: 2,
         // Merged Name: Classic Polo T-Shirt (White & Black)
         name: "Classic Polo T-Shirt",
-        description: "The Polo T-Shirt - tailored fit, premium fabric, and a commemorative logo that celebrates the Club's heritage. Available in Classic White and Black.",
+        description: "The Casablanca Polo—tailored fit, premium fabric, and a commemorative logo that celebrates the Club’s heritage. Available in Classic White and Black.",
         price: 1150,
         image: "/assets/products/polo-white.jpg",
         images: ["/assets/products/polo-white.jpg", "/assets/products/polo-black.jpg", "/assets/products/catalog-1.jpg"],
@@ -28,7 +28,7 @@ export const PRODUCTS: Product[] = [
         id: 4,
         // Merged Name: Zodiac Collection: Silk Tie (Yellow & Black)
         name: "Zodiac Collection: Silk Tie",
-        description: "Skilfully woven in pure silk and finished with the exclusive 150 Years logo. A refined tribute to the Club's legacy.",
+        description: "Skilfully woven in pure silk and finished with the exclusive 150 Years logo. A refined tribute to the Club’s legacy",
         price: 1665,
         image: "/assets/products/tie-beige.jpg", // Yellow/Beige as default
         images: ["/assets/products/tie-beige.jpg", "/assets/products/tie-blue.jpg", "/assets/products/catalog-2.jpg"],
@@ -50,7 +50,7 @@ export const PRODUCTS: Product[] = [
         id: 7,
         // New Product
         name: "Bombay Gymkhana Key Chain",
-        description: "STYLISH BRASS KEY CHAIN A Sleek black-and-gold key chain embossed with Bombay Gymkhana's 150-Year logo.Stylish,durable, and perfect for everyday use or thoughtful gifting",
+        description: "A sleek black-and-gold key chain with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
         price: 488,
         image: "/assets/products/KeyChain.jpg",
         images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
@@ -63,5 +63,14 @@ export const PRODUCTS: Product[] = [
         price: 1,
         image: "/assets/products/BGM-Stamp.jpg",
         images: ["/assets/products/BGM-Stamp.jpg"]
+    },
+    {
+        id: 9,
+        // New Product
+        name: "Ladies Umbrella",
+        description: "A slightly smaller, lightweight, and durable umbrella with quick-dry fabric and a comfortable grip, ideal for everyday rain or sun protection",
+        price: 825,
+        image: "/assets/products/umbrella-open.jpg",
+        images: ["/assets/products/umbrella-open.jpg", "/assets/products/umbrella-front.jpg", "/assets/products/catalog-2.jpg"]
     }
 ];

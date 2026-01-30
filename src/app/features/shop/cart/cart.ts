@@ -16,15 +16,15 @@ export class CartComponent {
   cartItems = this.cartService.cartItems;
   cartTotal = this.cartService.cartTotal;
 
-  increaseQty(productId: number, currentQty: number) {
-    this.cartService.updateQuantity(productId, currentQty + 1);
+  increaseQty(productId: number, currentQty: number, color?: string, size?: string) {
+    this.cartService.updateQuantity(productId, currentQty + 1, color, size);
   }
 
-  decreaseQty(productId: number, currentQty: number) {
-    this.cartService.updateQuantity(productId, currentQty - 1);
+  decreaseQty(productId: number, currentQty: number, color?: string, size?: string) {
+    this.cartService.updateQuantity(productId, currentQty - 1, color, size);
   }
 
-  removeItem(productId: number) {
-    this.cartService.removeFromCart(productId);
+  removeItem(productId: number, color?: string, size?: string) {
+    this.cartService.removeFromCart(productId, color, size);
   }
 }

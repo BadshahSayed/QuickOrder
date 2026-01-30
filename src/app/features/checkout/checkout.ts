@@ -27,12 +27,16 @@ export class CheckoutComponent {
   // Signal to track delivery mode for reactive total calculation
   deliveryModeSignal = signal<'PICKUP' | 'DELIVERY'>('PICKUP');
 
+  // State for Membership Logic
+  showMemberPopup = true;
+  isMember: boolean | null = null;
+
   checkoutForm = this.fb.group({
-    memberid: ['', Validators.required],
+    memberid: [''], // Validators added dynamically
     name: ['', Validators.required],
-    mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10,12}$')]], // Allow 10-12 digits
+    mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10,12}$')]],
     deliveryMode: ['PICKUP', Validators.required],
-    address: ['']
+    address: [''] // Validators added dynamically
   });
 
   // Derived state for total - now reactive with signal
@@ -47,15 +51,37 @@ export class CheckoutComponent {
     this.checkoutForm.get('deliveryMode')?.valueChanges.subscribe(mode => {
       // Update the signal to make total reactive
       this.deliveryModeSignal.set(mode as 'PICKUP' | 'DELIVERY');
-
-      const addressControl = this.checkoutForm.get('address');
-      if (mode === 'DELIVERY') {
-        addressControl?.setValidators([Validators.required]);
-      } else {
-        addressControl?.clearValidators();
-      }
-      addressControl?.updateValueAndValidity();
     });
+  }
+
+  setMemberStatus(isMember: boolean) {
+    this.isMember = isMember;
+    this.showMemberPopup = false;
+
+    const memberIdControl = this.checkoutForm.get('memberid');
+    const addressControl = this.checkoutForm.get('address');
+    const deliveryModeControl = this.checkoutForm.get('deliveryMode');
+
+    if (isMember) {
+      // Member Logic: ID Required, Pickup Only
+      memberIdControl?.setValidators([Validators.required]);
+      addressControl?.clearValidators();
+
+      // Force Pickup
+      deliveryModeControl?.setValue('PICKUP');
+      // We might want to disable the control in UI, but reactive forms handling...
+
+    } else {
+      // Non-Member Logic: Address Required, Delivery Only (as per explicit requirement "Hide Pickup")
+      memberIdControl?.clearValidators();
+      addressControl?.setValidators([Validators.required]);
+
+      // Force Delivery
+      deliveryModeControl?.setValue('DELIVERY');
+    }
+
+    memberIdControl?.updateValueAndValidity();
+    addressControl?.updateValueAndValidity();
   }
 
   get deliveryMode() {
@@ -70,7 +96,8 @@ export class CheckoutComponent {
     const deliveryCharge = isDelivery ? this.deliveryFee : 0;
 
     const order: Order = {
-      customerMemberId: formVal.memberid!,
+      userType: this.isMember ? 'MEMBER' : 'GUEST',
+      customerMemberId: formVal.memberid || undefined,
       customerName: formVal.name!,
       customerMobile: formVal.mobile!,
       customerAddress: formVal.address || undefined,
