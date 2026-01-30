@@ -79,7 +79,7 @@ export const PRODUCTS: Product[] = [
         id: 10,
         // New Product
         name: "First Day Cover",
-        description: "A slightly smaller, lightweight, and durable umbrella with quick-dry fabric and a comfortable grip, ideal for everyday rain or sun protection",
+        description: "150TH ANNIVERSARY OF BOMBAY GYMKHANA",
         price: 25,
         image: "/assets/products/Firstday-Cover.jpg",
         images: ["/assets/products/Firstday-Cover.jpg", "/assets/products/Firstday-Cover.jpg", "/assets/products/catalog-2.jpg"]
