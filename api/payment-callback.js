@@ -8,12 +8,12 @@ export default function handler(req, res) {
         // Note: req.query in Vercel functions contains the parsed query string
         const queryParams = new URLSearchParams(req.query).toString();
 
-        // Redirect to the homepage with the same query parameters
+        // Redirect to the order-success page with the same query parameters
         // 303 See Other enforces a GET request on the redirection target
-        res.redirect(303, `/?${queryParams}`);
+        res.redirect(303, `/order-success?${queryParams}`);
     } else {
         // If it's already a GET (or other), just pass it through or redirect
         const queryParams = new URLSearchParams(req.query).toString();
-        res.redirect(303, `/?${queryParams}`);
+        res.redirect(303, `/order-success?${queryParams}`);
     }
 }
