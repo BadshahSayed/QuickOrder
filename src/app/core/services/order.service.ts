@@ -210,7 +210,7 @@ export class OrderService {
             const result = await response.json();
             if (result.success) {
                 console.log('✅ Email notification sent successfully to admin!');
-                // alert('✅ Admin Email Sent Successfully!'); 
+                alert('✅ Admin Email Sent Successfully! Please check SPAM folder.');
             } else {
                 console.error('❌ Email sending failed:', result);
                 alert('❌ Email Sending Failed: ' + JSON.stringify(result));
