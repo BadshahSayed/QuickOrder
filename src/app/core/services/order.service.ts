@@ -15,8 +15,15 @@ export class OrderService {
     private subMerchantId = '78';
     private encryptionKey = '3862351407801163';
     private payMode = '9';
-    private returnUrl = 'https://www.bombaygymkhana.com';
-    // private returnUrl = 'http://localhost:4200/order-success'; 
+    // Dynamic Return URL to support both Localhost and Production
+    // Vercel:
+    private get returnUrl() {
+        return `${window.location.origin}/api/payment-callback`;
+    }
+    // Hostinger (Uncomment below and comment above when deploying to Hostinger):
+    // private get returnUrl() {
+    //    return `${window.location.origin}/payment-callback.php`;
+    // }
 
     // URL Toggle
     private isUat = false; // Set to true to test UAT if Prod is blocked
@@ -34,7 +41,14 @@ export class OrderService {
         return new Promise((resolve) => {
             if (order.total === 0) {
                 // Direct success only for free orders
-                this.processSuccess(order);
+                this.processSuccess(order); // It is async but we don't strictly wait for email to resolve the createOrder promise? 
+                // Actually, if we want to wait for email before UI update:
+                // await this.processSuccess(order); 
+                // But this method is not async in the signature. 
+                // Let's leave this one as is, it's for 'Free' orders which are instant.
+                // Reverting complexity - no change needed here if we don't want to break interface.
+                // But wait, processSuccess is now Async. Calling it without await is 'fire and forget'.
+                // That's acceptable for the UI flow here.
                 resolve(true);
             } else {
                 this.initiatePayment(order);
@@ -50,7 +64,9 @@ export class OrderService {
         // 1. Retrieve the pending order
         const pendingOrderJson = sessionStorage.getItem('pending_order');
         if (!pendingOrderJson) {
-            console.error('No pending order found in session storage.');
+            const msg = '❌ Verification Failed: No pending order found in session storage. Are you testing on Localhost but returning to Production?';
+            console.error(msg);
+            alert(msg); // Alert for visibility during debug
             return null;
         }
 
@@ -63,7 +79,7 @@ export class OrderService {
         }
 
         // 3. Mark as Paid and finalize
-        this.processSuccess(order);
+        await this.processSuccess(order);
 
         // 4. Clear pending order
         sessionStorage.removeItem('pending_order');
@@ -144,7 +160,7 @@ export class OrderService {
         return encrypted.toString();
     }
 
-    private processSuccess(order: Order) {
+    private async processSuccess(order: Order) {
         console.log('🎯 Processing successful order:', order.id);
 
         order.status = 'PAID';
@@ -153,9 +169,9 @@ export class OrderService {
         this.cartService.clearCart();
         console.log('🛒 Cart cleared');
 
-        // Send Email
-        this.sendEmailNotification(order);
-        console.log('📧 Email notification triggered');
+        // Send Email - Await to ensure it's sent (or at least tried)
+        await this.sendEmailNotification(order);
+        console.log('📧 Email notification sequence finished');
 
         this.router.navigate(['/order-success'], { state: { order } });
         console.log('🔄 Navigating to order success page');
@@ -170,16 +186,23 @@ export class OrderService {
         try {
             console.log('📧 Sending order notification email to admin...');
 
-            const formData = new FormData();
-            formData.append('access_key', web3formsAccessKey);
-            formData.append('subject', `🛍️ New Order #${order.id} - ${order.customerName}`);
-            formData.append('from_name', 'MyGymkhanaStore - Bombay Gymkhana');
-            formData.append('to', adminEmail);
-            formData.append('message', this.formatOrderEmail(order));
+            const body = {
+                access_key: web3formsAccessKey,
+                subject: `🛍️ New Order #${order.id} - ${order.customerName}`,
+                from_name: 'MyGymkhanaStore - Bombay Gymkhana',
+                // address to 'to' field is optional/feature-gated on Web3Forms, 
+                // but we include it. If it fails, it goes to account owner.
+                to: adminEmail,
+                message: this.formatOrderEmail(order)
+            };
 
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(body)
             });
 
             const result = await response.json();
@@ -187,6 +210,9 @@ export class OrderService {
                 console.log('✅ Email notification sent successfully to admin!');
             } else {
                 console.error('❌ Email sending failed:', result);
+                if (result.message && result.message.includes('rate limit')) {
+                    console.warn('Rate limit hit. Email might be delayed.');
+                }
             }
         } catch (error) {
             console.error('❌ Error sending email:', error);
