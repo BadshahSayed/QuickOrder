@@ -15,6 +15,7 @@ export interface CartItem {
     quantity: number;
     selectedColor?: string;
     selectedSize?: string;
+    selectedImage?: string;
 }
 
 export interface Order {

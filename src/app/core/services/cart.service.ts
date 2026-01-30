@@ -26,7 +26,7 @@ export class CartService {
         }
     }
 
-    addToCart(product: Product, color?: string, size?: string) {
+    addToCart(product: Product, color?: string, size?: string, image?: string) {
         this.cartItems.update(items => {
             const existing = items.find(item =>
                 item.product.id === product.id &&
@@ -41,7 +41,7 @@ export class CartService {
                         : item
                 );
             } else {
-                return [...items, { product, quantity: 1, selectedColor: color, selectedSize: size }];
+                return [...items, { product, quantity: 1, selectedColor: color, selectedSize: size, selectedImage: image }];
             }
         });
     }

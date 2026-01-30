@@ -15,7 +15,7 @@
                     @for (item of cartItems(); track item.product.id) {
                     <li class="flex py-6">
                         <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                            <img [src]="item.product.image" [alt]="item.product.name"
+                            <img [src]="item.selectedImage || item.product.image" [alt]="item.product.name"
                                 class="h-full w-full object-cover object-center">
                         </div>
 

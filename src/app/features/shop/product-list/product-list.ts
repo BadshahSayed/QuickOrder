@@ -79,7 +79,8 @@ export class ProductListComponent {
     this.cartService.addToCart(
       this.selectedProduct,
       this.selectedColor?.name,
-      this.selectedSize || undefined
+      this.selectedSize || undefined,
+      this.currentImage
     );
     this.closeProductDetails();
     this.showModal = true; // Show confirmation modal
