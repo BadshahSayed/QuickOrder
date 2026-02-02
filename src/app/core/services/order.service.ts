@@ -210,17 +210,15 @@ export class OrderService {
             const result = await response.json();
             if (result.success) {
                 console.log('✅ Email notification sent successfully to admin!');
-                alert('✅ Admin Email Sent Successfully! Please check SPAM folder.');
+                // Removed alert to prevent flow interruption
             } else {
                 console.error('❌ Email sending failed:', result);
-                alert('❌ Email Sending Failed: ' + JSON.stringify(result));
                 if (result.message && result.message.includes('rate limit')) {
-                    alert('⚠️ Email Rate Limit Hit. Please wait before retrying.');
+                    console.warn('⚠️ Email Rate Limit Hit.');
                 }
             }
         } catch (error) {
             console.error('❌ Error sending email:', error);
-            alert('❌ Network/Code Error sending email: ' + error);
         }
     }
 
