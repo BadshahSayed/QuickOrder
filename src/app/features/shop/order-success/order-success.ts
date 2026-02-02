@@ -53,7 +53,7 @@ export class OrderSuccessComponent implements OnInit {
     // Otherwise, check for query params from Payment Gateway
     this.route.queryParams.subscribe(async params => {
       this.currentParams = params;
-      if (params['Reference No'] || params['status']) {
+      if (params['Reference No'] || params['ReferenceNo'] || params['status'] || params['Response Code']) {
         console.log('Payment Callback Detected:', params);
         this.loading = true; // Ensure we show loading while verifying
         try {

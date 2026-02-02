@@ -70,15 +70,21 @@ export class OrderService {
         }
 
         const order: Order = JSON.parse(pendingOrderJson);
-        const refNo = queryParams['Reference No'];
+        const refNo = queryParams['Reference No'] || queryParams['ReferenceNo'];
+        const responseCode = queryParams['Response Code'];
 
         // 2. Verify basic match 
         if (refNo && refNo !== order.id) {
             console.warn('Reference No mismatch', refNo, order.id);
         }
 
-        // 3. Mark as Paid and finalize
-        await this.processSuccess(order);
+        // 3. Mark as Paid and finalize if success
+        // E000 is ICICI success code
+        if (responseCode === 'E000' || queryParams['status'] === 'SUCCESS') {
+            await this.processSuccess(order);
+        } else {
+            console.warn('Payment not successful based on codes:', responseCode);
+        }
 
         // 4. Clear pending order
         sessionStorage.removeItem('pending_order');
