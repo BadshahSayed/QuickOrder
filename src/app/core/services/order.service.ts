@@ -175,8 +175,13 @@ export class OrderService {
         await this.sendEmailNotification(order);
         console.log('📧 Email notification sequence finished');
 
-        this.router.navigate(['/order-success'], { state: { order } });
-        console.log('🔄 Navigating to order success page');
+        // Only navigate if we are not already on the order-success page
+        if (!this.router.url.includes('/order-success')) {
+            this.router.navigate(['/order-success'], { state: { order } });
+            console.log('🔄 Navigating to order success page');
+        } else {
+            console.log('✨ Already on success page, skipping redundant navigation');
+        }
     }
 
     private async sendEmailNotification(order: Order) {

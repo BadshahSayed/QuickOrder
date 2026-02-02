@@ -3,17 +3,16 @@ export default function handler(req, res) {
     // This function accepts the POST, identifies the query parameters, 
     // and redirects the user back to the Angular app (root) using GET.
 
-    if (req.method === 'POST') {
-        // Extract query params from the request
-        // Note: req.query in Vercel functions contains the parsed query string
-        const queryParams = new URLSearchParams(req.query).toString();
+    if (req.method === 'POST' || req.method === 'GET') {
+        // Extract both query params and body params (for POST)
+        const combinedData = { ...req.query, ...req.body };
+        const queryParams = new URLSearchParams(combinedData).toString();
 
-        // Redirect to the order-success page with the same query parameters
+        // Redirect to the order-success page with the parameters
         // 303 See Other enforces a GET request on the redirection target
         res.redirect(303, `/order-success?${queryParams}`);
     } else {
-        // If it's already a GET (or other), just pass it through or redirect
-        const queryParams = new URLSearchParams(req.query).toString();
-        res.redirect(303, `/order-success?${queryParams}`);
+        // Fallback for other methods
+        res.status(405).send('Method Not Allowed');
     }
 }

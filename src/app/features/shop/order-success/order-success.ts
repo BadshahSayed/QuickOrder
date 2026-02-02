@@ -26,6 +26,19 @@ export class OrderSuccessComponent implements OnInit {
     // Try to get from navigation state first (Direct mock testing)
     const navigation = this.router.getCurrentNavigation();
     this.order = navigation?.extras.state?.['order'];
+
+    // Fallback: Check session storage for a pending order if navigation state is missing
+    if (!this.order) {
+      const pendingOrderJson = sessionStorage.getItem('pending_order');
+      if (pendingOrderJson) {
+        try {
+          this.order = JSON.parse(pendingOrderJson);
+          console.log('📦 Found order in session storage');
+        } catch (e) {
+          console.error('Error parsing pending order', e);
+        }
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -40,6 +53,7 @@ export class OrderSuccessComponent implements OnInit {
       this.currentParams = params;
       if (params['Reference No'] || params['status']) {
         console.log('Payment Callback Detected:', params);
+        this.loading = true; // Ensure we show loading while verifying
         try {
           const verifiedOrder = await this.orderService.verifyPayment(params);
           if (verifiedOrder) {
