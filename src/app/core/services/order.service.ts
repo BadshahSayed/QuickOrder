@@ -66,10 +66,7 @@ export class OrderService {
         if (!pendingOrderJson) {
             const msg = '❌ Verification Failed: No pending order found in session storage. Please ensure you are not switching browsers or using Incognito mode mid-payment.';
             console.error(msg);
-            alert(msg);
             return null;
-        } else {
-            // alert('Debug: Pending Order Found. Verifying...');
         }
 
         const order: Order = JSON.parse(pendingOrderJson);
@@ -165,11 +162,12 @@ export class OrderService {
     private async processSuccess(order: Order) {
         console.log('🎯 Processing successful order:', order.id);
 
-        order.status = 'PAID';
-        console.log('✅ Order status set to PAID');
-
+        // Immediate Cart Clear - Do this first to ensure consistency
         this.cartService.clearCart();
         console.log('🛒 Cart cleared');
+
+        order.status = 'PAID';
+        console.log('✅ Order status set to PAID');
 
         // Send Email - Await to ensure it's sent (or at least tried)
         await this.sendEmailNotification(order);

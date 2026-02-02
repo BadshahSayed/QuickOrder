@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CurrencyPipe, DatePipe, CommonModule } from '@angular/common';
 import { OrderService } from '../../../core/services/order.service';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-order-success',
@@ -17,6 +18,7 @@ export class OrderSuccessComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private orderService = inject(OrderService);
+  private cartService = inject(CartService);
 
   loading = true;
   error = '';
@@ -58,12 +60,18 @@ export class OrderSuccessComponent implements OnInit {
           const verifiedOrder = await this.orderService.verifyPayment(params);
           if (verifiedOrder) {
             this.order = verifiedOrder;
+            this.cartService.clearCart(); // Safety double-clear
           } else {
             this.error = 'Payment verification failed or order not found.';
           }
         } catch (err) {
           console.error(err);
           this.error = 'An error occurred during verification.';
+        }
+      } else {
+        // If no params, but we already have an order (from constructor), just ensure cart is clear
+        if (this.order) {
+          this.cartService.clearCart();
         }
       }
       this.loading = false;
