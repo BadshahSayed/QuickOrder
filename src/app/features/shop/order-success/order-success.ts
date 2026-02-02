@@ -20,6 +20,7 @@ export class OrderSuccessComponent implements OnInit {
 
   loading = true;
   error = '';
+  currentParams: any = {};
 
   constructor() {
     // Try to get from navigation state first (Direct mock testing)
@@ -36,6 +37,7 @@ export class OrderSuccessComponent implements OnInit {
 
     // Otherwise, check for query params from Payment Gateway
     this.route.queryParams.subscribe(async params => {
+      this.currentParams = params;
       if (params['Reference No'] || params['status']) {
         console.log('Payment Callback Detected:', params);
         try {
