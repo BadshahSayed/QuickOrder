@@ -64,14 +64,24 @@ export class OrderService {
         // 1. Retrieve the pending order
         const pendingOrderJson = sessionStorage.getItem('pending_order');
         if (!pendingOrderJson) {
-            const msg = '❌ Verification Failed: No pending order found in session storage. Please ensure you are not switching browsers or using Incognito mode mid-payment.';
-            console.error(msg);
+            console.error('❌ Verification Failed: No pending order found in session storage.');
             return null;
         }
 
         const order: Order = JSON.parse(pendingOrderJson);
-        const refNo = queryParams['Reference No'] || queryParams['ReferenceNo'];
-        const responseCode = queryParams['Response Code'];
+
+        // CRITICAL FIX: Ensure dates are actual Date objects after JSON parsing
+        if (order.createdAt && typeof order.createdAt === 'string') {
+            order.createdAt = new Date(order.createdAt);
+        }
+
+        // Use robust parameter lookup for bank fields
+        const refNo = this.getParam(queryParams, 'Reference No', 'ReferenceNo');
+        const responseCode = this.getParam(queryParams, 'Response Code', 'ResponseCode');
+        const bankRef = this.getParam(queryParams, 'Unique Ref Number', 'UniqueRefNumber');
+        const bankAmount = this.getParam(queryParams, 'Total Amount', 'TotalAmount', 'Transaction Amount', 'TransactionAmount');
+
+        console.log('🔍 Extracted bank fields:', { refNo, responseCode, bankRef, bankAmount });
 
         // 2. Verify basic match 
         if (refNo && refNo !== order.id) {
@@ -81,15 +91,37 @@ export class OrderService {
         // 3. Mark as Paid and finalize if success
         // E000 is ICICI success code
         if (responseCode === 'E000' || queryParams['status'] === 'SUCCESS') {
+            console.log('✅ Success detected! Updating status to PAID...');
+            order.status = 'PAID';
+            order.paymentId = bankRef || queryParams['Unique Ref Number'];
+
+            // Process success (clear cart, send email) immediately
             await this.processSuccess(order);
         } else {
-            console.warn('Payment not successful based on codes:', responseCode);
+            console.warn('⚠️ Payment not successful based on codes:', responseCode);
         }
 
-        // 4. Clear pending order
+        // 4. Clear pending order from session
         sessionStorage.removeItem('pending_order');
 
         return order;
+    }
+
+    private getParam(params: any, ...keys: string[]): string | undefined {
+        // First try exact matches
+        for (const key of keys) {
+            if (params[key]) return params[key];
+        }
+
+        // Fallback to normalized matching (insensitive to spaces, underscores, capitalization)
+        const normalizedKeys = keys.map(k => k.toLowerCase().replace(/[\s_%]/g, ''));
+        for (const key in params) {
+            const normalizedKey = key.toLowerCase().replace(/[\s_%]/g, '');
+            if (normalizedKeys.includes(normalizedKey)) {
+                return params[key];
+            }
+        }
+        return undefined;
     }
 
     private initiatePayment(order: Order) {
@@ -170,21 +202,20 @@ export class OrderService {
 
         // Immediate Cart Clear - Do this first to ensure consistency
         this.cartService.clearCart();
-        console.log('🛒 Cart cleared');
+        console.log('🛒 Cart cleared successfully');
 
         order.status = 'PAID';
-        console.log('✅ Order status set to PAID');
 
-        // Send Email - Await to ensure it's sent (or at least tried)
-        await this.sendEmailNotification(order);
-        console.log('📧 Email notification sequence finished');
+        // Trigger Email Notification (non-blocking but logged)
+        console.log('📧 Triggering email notification...');
+        this.sendEmailNotification(order).catch(err => {
+            console.error('📧 Email notification failed silently:', err);
+        });
 
-        // Only navigate if we are not already on the order-success page
+        // Navigation safety
         if (!this.router.url.includes('/order-success')) {
-            this.router.navigate(['/order-success'], { state: { order } });
             console.log('🔄 Navigating to order success page');
-        } else {
-            console.log('✨ Already on success page, skipping redundant navigation');
+            this.router.navigate(['/order-success'], { state: { order } });
         }
     }
 

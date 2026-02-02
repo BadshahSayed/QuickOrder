@@ -44,8 +44,17 @@ export class OrderSuccessComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // If we already have the order (from state), just show it
-    if (this.order) {
+    // We only return early if we have the order AND there are no callback parameters to process.
+    // Otherwise, we must proceed to check queryParams for the bank's response.
+    const queryMap = this.route.snapshot.queryParamMap;
+    const hasCallbackParams = queryMap.has('Reference No') ||
+      queryMap.has('ReferenceNo') ||
+      queryMap.has('Response Code') ||
+      queryMap.has('ResponseCode') ||
+      queryMap.has('status');
+
+    if (this.order && !hasCallbackParams) {
+      console.log('✅ Order exists and no callback detected. Skipping verification.');
       this.loading = false;
       return;
     }
@@ -60,17 +69,20 @@ export class OrderSuccessComponent implements OnInit {
           const verifiedOrder = await this.orderService.verifyPayment(params);
           if (verifiedOrder) {
             this.order = verifiedOrder;
-            this.cartService.clearCart(); // Safety double-clear
+            // Immediate Cart Clear - Safety double-clear
+            this.cartService.clearCart();
+            console.log('✅ Payment verified and cart cleared!');
           } else {
+            console.warn('⚠️ Payment verification returned NO order.');
             this.error = 'Payment verification failed or order not found.';
           }
         } catch (err) {
-          console.error(err);
+          console.error('❌ Error during verification:', err);
           this.error = 'An error occurred during verification.';
         }
       } else {
         // If no params, but we already have an order (from constructor), just ensure cart is clear
-        if (this.order) {
+        if (this.order && this.order.status === 'PAID') {
           this.cartService.clearCart();
         }
       }

@@ -84,13 +84,36 @@
                     <div>
                         <dt class="font-medium text-gray-900">Payment Status</dt>
                         <dd class="mt-2 text-gray-700">
-                            <p class="text-green-600 font-bold uppercase">{{ order.status }}</p>
+                            <p
+                                [class]="order.status === 'PAID' ? 'text-green-600 font-bold uppercase' : 'text-yellow-600 font-bold uppercase'">
+                                {{ order.status }}
+                            </p>
                             @if (order.paymentId) {
-                            <p class="text-xs text-gray-500 mt-1">ID: {{ order.paymentId }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Ref: {{ order.paymentId }}</p>
                             }
                         </dd>
                     </div>
                 </dl>
+
+                <!-- Bank Response Details (For Transparency) -->
+                @if (currentParams['Response Code'] || currentParams['status']) {
+                <div class="mt-6 p-3 bg-gray-50 rounded-md border border-gray-200">
+                    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Bank Transaction Details
+                    </h4>
+                    <dl class="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                        <div>
+                            <dt class="text-gray-500">Bank Ref</dt>
+                            <dd class="text-gray-900 font-mono">{{ currentParams['Unique Ref Number'] ||
+                                currentParams['UniqueRefNumber'] || 'N/A' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Paid Amount</dt>
+                            <dd class="text-gray-900 font-bold">₹{{ currentParams['Total Amount'] ||
+                                currentParams['Transaction Amount'] || '1.00' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                }
 
                 <dl class="space-y-6 border-t border-gray-200 pt-10 text-sm">
                     <div class="flex justify-between">
