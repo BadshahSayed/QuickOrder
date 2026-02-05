@@ -101,6 +101,6 @@ export const PRODUCTS: Product[] = [
         description: "White Sports Cap with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
         price: 211,
         image: "/assets/products/Cap.jpeg",
-        images: ["/assets/products/Cap.jpeg", "/assets/products/Cap-1.jpeg"]
+        images: ["/assets/products/Cap.jpeg", "/assets/products/Cap-2.jpeg"]
     }
 ];
