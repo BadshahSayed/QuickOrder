@@ -4,7 +4,7 @@ export const PRODUCTS: Product[] = [
     {
         id: 1,
         // Old Name: Bombay Gymkhana Flask
-        name: "Thermo-Steel Coffee Mug",
+        name: "BG Thermo-Steel Coffee Mug",
         description: "A classy, well-finished mug designed to keep up with your day, featuring Milton durability and all-day temperature retention",
         price: 620,
         image: "/assets/products/flask-front.jpg",
@@ -13,7 +13,7 @@ export const PRODUCTS: Product[] = [
     {
         id: 2,
         // Merged Name: Classic Polo T-Shirt (White & Black)
-        name: "Classic Polo T-Shirt",
+        name: "Classic Men’s Polo T-Shirt",
         description: "The Casablanca Polo—tailored fit, premium fabric, and a commemorative logo that celebrates the Club’s heritage. Available in Classic White and Black.",
         price: 1150,
         image: "/assets/products/polo-white.jpg",
@@ -68,7 +68,7 @@ export const PRODUCTS: Product[] = [
     {
         id: 9,
         // New Product
-        name: "Bombay Gymkhana Key Chain",
+        name: "Stylish Metal Key chain",
         description: "A sleek black-and-gold key chain with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
         price: 488,
         image: "/assets/products/KeyChain.jpg",
