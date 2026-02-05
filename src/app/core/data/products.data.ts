@@ -59,7 +59,7 @@ export const PRODUCTS: Product[] = [
     {
         id: 8,
         // New Product
-        name: "Bombay Gymkhana Stamp",
+        name: "Bombay Gymkhana stamp",
         description: "150TH ANNIVERSARY OF BOMBAY GYMKHANA Stamp",
         price: 5,
         image: "/assets/products/BGM-Stamp.jpg",
@@ -78,9 +78,9 @@ export const PRODUCTS: Product[] = [
     {
         id: 10,
         // New Product
-        name: "First Day Cover",
+        name: "First Day Covers with Stamp",
         description: "150TH ANNIVERSARY OF BOMBAY GYMKHANA",
-        price: 25,
+        price: 26,
         image: "/assets/products/Firstday-Cover.jpg",
         images: ["/assets/products/Firstday-Cover.jpg", "/assets/products/Firstday-Cover.jpg", "/assets/products/catalog-2.jpg"]
     },
@@ -93,5 +93,14 @@ export const PRODUCTS: Product[] = [
         price: 15,
         image: "/assets/products/Brouchure-1.jpg",
         images: ["/assets/products/Brouchure-1.jpg", "/assets/products/Brouchure-2.jpg", "/assets/products/catalog-2.jpg"]
+    },
+    {
+        id: 12,
+        // New Product
+        name: "White Sports Cap",
+        description: "White Sports Cap with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
+        price: 211,
+        image: "/assets/products/Cap.jpeg",
+        images: ["/assets/products/Cap.jpeg", "/assets/products/Cap-1.jpeg"]
     }
 ];
