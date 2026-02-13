@@ -222,8 +222,8 @@ export class OrderService {
     private async sendEmailNotification(order: Order) {
         // Using Web3Forms - Free service, no signup required
         // Get your free access key from: https://web3forms.com/
-        const adminEmail = 'badshahsayed2010@gmail.com';
-        const web3formsAccessKey = '4407c9bf-af53-4148-9132-5b77df6a4fbc';
+        const adminEmail = 'agm.relations@bombaygymkhana.com';
+        const web3formsAccessKey = '8d165190-1f6d-424f-b88d-adf3352256ce';
 
         try {
             console.log('📧 Sending order notification email to admin...');
