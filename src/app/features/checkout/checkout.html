@@ -95,7 +95,8 @@
                         <!-- Pickup Option: Show only if Member -->
                         @if (isMember) {
                         <label [class.border-indigo-500]="deliveryMode === 'PICKUP'"
-                            class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ring-2 ring-indigo-500">
+                            [class.ring-2]="deliveryMode === 'PICKUP'"
+                            class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ring-indigo-500">
                             <input type="radio" formControlName="deliveryMode" value="PICKUP" class="sr-only">
                             <span class="flex flex-1">
                                 <span class="flex flex-col">
@@ -104,15 +105,18 @@
                                     <span class="mt-6 text-sm font-medium text-gray-900">₹0.00</span>
                                 </span>
                             </span>
-                            <span class="text-indigo-600 pointer-events-none absolute -inset-px rounded-lg border-2"
+                            @if (deliveryMode === 'PICKUP') {
+                            <span
+                                class="text-indigo-600 pointer-events-none absolute -inset-px rounded-lg border-2 border-indigo-500"
                                 aria-hidden="true"></span>
+                            }
                         </label>
                         }
 
-                        <!-- Delivery Option: Show only if Non-Member -->
-                        @if (!isMember) {
+                        <!-- Delivery Option: Show for everyone -->
                         <label [class.border-indigo-500]="deliveryMode === 'DELIVERY'"
-                            class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ring-2 ring-indigo-500">
+                            [class.ring-2]="deliveryMode === 'DELIVERY'"
+                            class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none ring-indigo-500">
                             <input type="radio" formControlName="deliveryMode" value="DELIVERY" class="sr-only">
                             <span class="flex flex-1">
                                 <span class="flex flex-col">
@@ -121,14 +125,16 @@
                                     <span class="mt-6 text-sm font-medium text-gray-900">₹{{ deliveryFee }}.00</span>
                                 </span>
                             </span>
-                            <span class="text-indigo-600 pointer-events-none absolute -inset-px rounded-lg border-2"
+                            @if (deliveryMode === 'DELIVERY') {
+                            <span
+                                class="text-indigo-600 pointer-events-none absolute -inset-px rounded-lg border-2 border-indigo-500"
                                 aria-hidden="true"></span>
+                            }
                         </label>
-                        }
                     </div>
                 </div>
 
-                @if (!isMember) {
+                @if (deliveryMode === 'DELIVERY') {
                 <div class="mt-10 border-t border-gray-200 pt-10">
                     <h2 class="text-lg font-medium text-gray-900">Shipping Address</h2>
                     <div class="mt-4">

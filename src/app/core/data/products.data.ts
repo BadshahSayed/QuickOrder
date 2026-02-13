@@ -106,8 +106,8 @@ export const PRODUCTS: Product[] = [
     {
         id: 13,
         // New Product
-        name: "COMMORATIVE POSTAGE STAMP",
-        description: "COMMORATIVE POSTAGE STAMP",
+        name: "COMMORATIVE POSTAGE STAMP & FDC COMBO PACK",
+        description: "COMMORATIVE POSTAGE STAMP & FDC COMBO PACK",
         price: 82,
         image: "/assets/products/CPS.jpeg",
         images: ["/assets/products/CPS.jpeg"]

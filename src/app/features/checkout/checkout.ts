@@ -50,7 +50,9 @@ export class CheckoutComponent {
     // React to delivery mode changes to update validators or state if needed
     this.checkoutForm.get('deliveryMode')?.valueChanges.subscribe(mode => {
       // Update the signal to make total reactive
-      this.deliveryModeSignal.set(mode as 'PICKUP' | 'DELIVERY');
+      const newMode = mode as 'PICKUP' | 'DELIVERY';
+      this.deliveryModeSignal.set(newMode);
+      this.updateAddressValidators(newMode);
     });
   }
 
@@ -59,28 +61,29 @@ export class CheckoutComponent {
     this.showMemberPopup = false;
 
     const memberIdControl = this.checkoutForm.get('memberid');
-    const addressControl = this.checkoutForm.get('address');
     const deliveryModeControl = this.checkoutForm.get('deliveryMode');
 
     if (isMember) {
-      // Member Logic: ID Required, Pickup Only
+      // Member Logic: ID Required
       memberIdControl?.setValidators([Validators.required]);
-      addressControl?.clearValidators();
-
-      // Force Pickup
-      deliveryModeControl?.setValue('PICKUP');
-      // We might want to disable the control in UI, but reactive forms handling...
-
+      // Members can choose both, default to PICKUP stays
     } else {
-      // Non-Member Logic: Address Required, Delivery Only (as per explicit requirement "Hide Pickup")
+      // Non-Member Logic: ID not required, Delivery Only
       memberIdControl?.clearValidators();
-      addressControl?.setValidators([Validators.required]);
-
-      // Force Delivery
       deliveryModeControl?.setValue('DELIVERY');
     }
 
     memberIdControl?.updateValueAndValidity();
+    this.updateAddressValidators(this.checkoutForm.get('deliveryMode')?.value || 'PICKUP');
+  }
+
+  private updateAddressValidators(mode: string) {
+    const addressControl = this.checkoutForm.get('address');
+    if (mode === 'DELIVERY') {
+      addressControl?.setValidators([Validators.required]);
+    } else {
+      addressControl?.clearValidators();
+    }
     addressControl?.updateValueAndValidity();
   }
 
