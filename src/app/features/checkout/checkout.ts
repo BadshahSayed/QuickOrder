@@ -22,7 +22,7 @@ export class CheckoutComponent {
   cartItems = this.cartService.cartItems;
   subtotal = this.cartService.cartTotal;
 
-  deliveryFee = 50;
+  deliveryFee = 200;
 
   // Signal to track delivery mode for reactive total calculation
   deliveryModeSignal = signal<'PICKUP' | 'DELIVERY'>('PICKUP');

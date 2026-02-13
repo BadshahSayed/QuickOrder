@@ -102,5 +102,14 @@ export const PRODUCTS: Product[] = [
         price: 211,
         image: "/assets/products/Cap.jpeg",
         images: ["/assets/products/Cap.jpeg", "/assets/products/Cap-2.jpeg"]
+    },
+    {
+        id: 13,
+        // New Product
+        name: "COMMORATIVE POSTAGE STAMP",
+        description: "COMMORATIVE POSTAGE STAMP",
+        price: 82,
+        image: "/assets/products/CPS.jpeg",
+        images: ["/assets/products/CPS.jpeg"]
     }
 ];
