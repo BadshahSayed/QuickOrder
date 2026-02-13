@@ -25,7 +25,7 @@ export const PRODUCTS: Product[] = [
         sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL', '5XL']
     },
     {
-        id: 4,
+        id: 3,
         // Merged Name: Zodiac Collection: Silk Tie (Yellow & Black)
         name: "Zodiac Collection: Silk Tie",
         description: "Skilfully woven in pure silk and finished with the exclusive 150 Years logo. A refined tribute to the Club’s legacy",
@@ -38,7 +38,7 @@ export const PRODUCTS: Product[] = [
         ]
     },
     {
-        id: 6,
+        id: 4,
         // New Product
         name: "Polo Classic Umbrella",
         description: "A lightweight and durable black-and-white umbrella with the classic Polo design and 150-years logo. Wind-resistant, quick-dry and easy to hold.",
@@ -47,7 +47,7 @@ export const PRODUCTS: Product[] = [
         images: ["/assets/products/umbrella-open.jpg", "/assets/products/umbrella-front.jpg", "/assets/products/catalog-2.jpg"]
     },
     {
-        id: 7,
+        id: 5,
         // New Product
         name: "Ladies Umbrella",
         description: "A slightly smaller, lightweight, and durable umbrella with quick-dry fabric and a comfortable grip, ideal for everyday rain or sun protection",
@@ -55,7 +55,24 @@ export const PRODUCTS: Product[] = [
         image: "/assets/products/umbrella-open.jpg",
         images: ["/assets/products/umbrella-open.jpg", "/assets/products/umbrella-front.jpg", "/assets/products/catalog-2.jpg"]
     },
-
+    {
+        id: 6,
+        // New Product
+        name: "Stylish Metal Key chain",
+        description: "A sleek black-and-gold key chain with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
+        price: 488,
+        image: "/assets/products/KeyChain.jpg",
+        images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
+    },
+    {
+        id: 7,
+        // New Product
+        name: "White Sports Cap",
+        description: "White Sports Cap with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
+        price: 211,
+        image: "/assets/products/Cap.jpeg",
+        images: ["/assets/products/Cap.jpeg", "/assets/products/Cap-2.jpeg"]
+    },
     {
         id: 8,
         // New Product
@@ -65,24 +82,25 @@ export const PRODUCTS: Product[] = [
         image: "/assets/products/BGM-Stamp.jpg",
         images: ["/assets/products/BGM-Stamp.jpg"]
     },
-    {
-        id: 9,
-        // New Product
-        name: "Stylish Metal Key chain",
-        description: "A sleek black-and-gold key chain with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
-        price: 488,
-        image: "/assets/products/KeyChain.jpg",
-        images: ["/assets/products/KeyChain.jpg", "/assets/products/KeyChain.jpg"]
-    },
+
 
     {
-        id: 10,
+        id: 9,
         // New Product
         name: "First Day Covers with Stamp",
         description: "150TH ANNIVERSARY OF BOMBAY GYMKHANA",
         price: 26,
         image: "/assets/products/Firstday-Cover.jpg",
         images: ["/assets/products/Firstday-Cover.jpg", "/assets/products/Firstday-Cover.jpg", "/assets/products/catalog-2.jpg"]
+    },
+    {
+        id: 10,
+        // New Product
+        name: "COMMORATIVE POSTAGE STAMP & FDC COMBO PACK",
+        description: "COMMORATIVE POSTAGE STAMP & FDC COMBO PACK",
+        price: 82,
+        image: "/assets/products/CPS.jpeg",
+        images: ["/assets/products/CPS.jpeg"]
     },
 
     {
@@ -93,23 +111,5 @@ export const PRODUCTS: Product[] = [
         price: 15,
         image: "/assets/products/Brouchure-1.jpg",
         images: ["/assets/products/Brouchure-1.jpg", "/assets/products/Brouchure-2.jpg", "/assets/products/catalog-2.jpg"]
-    },
-    {
-        id: 12,
-        // New Product
-        name: "White Sports Cap",
-        description: "White Sports Cap with Bombay Gymkhana’s 150-years logo on one side and the original logo on the other. Stylish, durable, and perfect for everyday use or gifting",
-        price: 211,
-        image: "/assets/products/Cap.jpeg",
-        images: ["/assets/products/Cap.jpeg", "/assets/products/Cap-2.jpeg"]
-    },
-    {
-        id: 13,
-        // New Product
-        name: "COMMORATIVE POSTAGE STAMP & FDC COMBO PACK",
-        description: "COMMORATIVE POSTAGE STAMP & FDC COMBO PACK",
-        price: 82,
-        image: "/assets/products/CPS.jpeg",
-        images: ["/assets/products/CPS.jpeg"]
     }
 ];
