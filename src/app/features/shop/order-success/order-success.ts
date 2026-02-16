@@ -22,11 +22,10 @@ export class OrderSuccessComponent implements OnInit {
   private cartService = inject(CartService);
   private cdr = inject(ChangeDetectorRef);
 
-
-
   loading = true;
   error = '';
   currentParams: any = {};
+  private emailSent = false;
 
   constructor() {
     // Try to get from navigation state first (Direct mock testing)
@@ -58,8 +57,15 @@ export class OrderSuccessComponent implements OnInit {
       queryMap.has('status');
 
     if (this.order && !hasCallbackParams) {
-      console.log('✅ Order exists and no callback detected. Skipping verification.');
+      console.log('✅ Order exists and no callback detected.');
       this.loading = false;
+
+      // TRIGGER EMAIL HERE - When URL is clean
+      if (this.order.status === 'PAID' && !this.emailSent) {
+        this.emailSent = true;
+        console.log('📧 Clean state detected. Triggering email...');
+        this.orderService.sendEmailNotification(this.order);
+      }
       return;
     }
 
@@ -67,22 +73,22 @@ export class OrderSuccessComponent implements OnInit {
     this.route.queryParams.subscribe(async params => {
       this.currentParams = params;
       if (params['Reference No'] || params['ReferenceNo'] || params['status'] || params['Response Code']) {
-        console.log('Payment Callback Detected:', params);
+        console.log('Payment Callback Detected. Cleaning URL...');
         this.loading = true; // Ensure we show loading while verifying
         try {
           const verifiedOrder = await this.orderService.verifyPayment(params);
           if (verifiedOrder) {
             this.order = verifiedOrder;
-            console.log('✅ Payment verified. New Order Status:', this.order.status);
-            // Immediate Cart Clear - Safety double-clear
+            console.log('✅ Payment verified. Status:', this.order.status);
+
+            // Immediate Cart Clear
             this.cartService.clearCart();
 
-            // Small delay to ensure Angular is ready for update
-            setTimeout(() => {
-              this.cdr.detectChanges();
-              console.log('✅ UI update triggered');
-            }, 100);
-
+            // CLEAN URL: Redirect to self with NO params to avoid network reset issues
+            this.router.navigate(['/order-success'], {
+              queryParams: {},
+              replaceUrl: true
+            });
 
           } else {
             console.warn('⚠️ Payment verification returned NO order.');
@@ -93,15 +99,13 @@ export class OrderSuccessComponent implements OnInit {
           this.error = 'An error occurred during verification.';
         }
       } else {
-        // If no params, but we already have an order (from constructor), just ensure cart is clear
+        // If no params, but we already have an order
         if (this.order && this.order.status === 'PAID') {
           this.cartService.clearCart();
         }
       }
       this.loading = false;
     });
-
-    // If still no order and no params after a short delay (or immediately if sync), handle empty state
-    // For now, loading=false handles the display
   }
+
 }

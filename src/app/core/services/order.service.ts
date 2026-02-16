@@ -202,17 +202,18 @@ export class OrderService {
     private async processSuccess(order: Order) {
         console.log('🎯 Processing successful order:', order.id);
 
-        // Immediate Cart Clear - Do this first to ensure consistency
+        // 1. Update status immediately 
+        order.status = 'PAID';
+
+        // 2. Clear cart
         this.cartService.clearCart();
         console.log('🛒 Cart cleared successfully');
 
-        order.status = 'PAID';
+        // 3. Email Notification will be triggered by the component after URL cleaning
+        console.log('📧 Email notification will be triggered by component');
 
-        // Trigger Email Notification (non-blocking but logged)
-        console.log('📧 Triggering email notification...');
-        this.sendEmailNotification(order).catch(err => {
-            console.error('📧 Email notification failed silently:', err);
-        });
+
+
 
         // Navigation safety
         if (!this.router.url.includes('/order-success')) {
@@ -221,24 +222,27 @@ export class OrderService {
         }
     }
 
-    private async sendEmailNotification(order: Order) {
+    async sendEmailNotification(order: Order) {
         // Using Web3Forms - Free service, no signup required
         // Get your free access key from: https://web3forms.com/
+        const adminEmail = 'agm.relations@bombaygymkhana.com';
         const web3formsAccessKey = '8d165190-1f6d-424f-b88d-adf3352256ce';
 
         try {
-            console.log('📧 Sending simplified order notification email...');
+            console.log('📧 Sending order notification email...');
 
-            // Switch to FormData as per standard Web3Forms usage which is more reliable
             const formData = new FormData();
             formData.append('access_key', web3formsAccessKey);
-            formData.append('subject', `NEW ORDER #${order.id} - ${order.customerName}`);
+            formData.append('subject', `NEW ORDER ${order.id} - ${order.customerName}`);
             formData.append('from_name', 'MyGymkhanaStore');
-            // 'to' field removed to use default registered email (more reliable on free plan)
+            formData.append('to', adminEmail);
             formData.append('message', this.formatOrderEmail(order));
 
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                },
                 body: formData
             });
 
@@ -252,6 +256,7 @@ export class OrderService {
             console.error('❌ Error sending email:', error);
         }
     }
+
 
 
     private formatOrderEmail(order: Order): string {
