@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CurrencyPipe, DatePipe, CommonModule } from '@angular/common';
 import { OrderService } from '../../../core/services/order.service';
@@ -19,6 +20,9 @@ export class OrderSuccessComponent implements OnInit {
   private router = inject(Router);
   private orderService = inject(OrderService);
   private cartService = inject(CartService);
+  private cdr = inject(ChangeDetectorRef);
+
+
 
   loading = true;
   error = '';
@@ -69,9 +73,12 @@ export class OrderSuccessComponent implements OnInit {
           const verifiedOrder = await this.orderService.verifyPayment(params);
           if (verifiedOrder) {
             this.order = verifiedOrder;
+            console.log('✅ Payment verified. New Order Status:', this.order.status);
             // Immediate Cart Clear - Safety double-clear
             this.cartService.clearCart();
-            console.log('✅ Payment verified and cart cleared!');
+            this.cdr.detectChanges(); // Force UI update
+            console.log('✅ UI update triggered');
+
           } else {
             console.warn('⚠️ Payment verification returned NO order.');
             this.error = 'Payment verification failed or order not found.';

@@ -104,7 +104,9 @@ export class OrderService {
         // 4. Clear pending order from session
         sessionStorage.removeItem('pending_order');
 
+        console.log('🏁 verifyPayment returning order with status:', order.status);
         return order;
+
     }
 
     private getParam(params: any, ...keys: string[]): string | undefined {
@@ -239,8 +241,10 @@ export class OrderService {
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 // No Content-Type header needed for FormData
-                body: formData
+                body: formData,
+                keepalive: true
             });
+
 
             const result = await response.json();
             if (result.success) {
