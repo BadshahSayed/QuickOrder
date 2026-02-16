@@ -224,42 +224,29 @@ export class OrderService {
     private async sendEmailNotification(order: Order) {
         // Using Web3Forms - Free service, no signup required
         // Get your free access key from: https://web3forms.com/
-        const adminEmail = 'agm.relations@bombaygymkhana.com';
         const web3formsAccessKey = '8d165190-1f6d-424f-b88d-adf3352256ce';
 
         try {
-            console.log('📧 Sending order notification email to admin...');
+            console.log('📧 Sending simplified order notification email...');
 
             // Switch to FormData as per standard Web3Forms usage which is more reliable
             const formData = new FormData();
             formData.append('access_key', web3formsAccessKey);
-            formData.append('subject', `🛍️ New Order #${order.id} - ${order.customerName}`);
-            formData.append('from_name', 'MyGymkhanaStore - Bombay Gymkhana');
-            formData.append('to', adminEmail);
+            formData.append('subject', `NEW ORDER #${order.id} - ${order.customerName}`);
+            formData.append('from_name', 'MyGymkhanaStore');
+            // 'to' field removed to use default registered email (more reliable on free plan)
             formData.append('message', this.formatOrderEmail(order));
 
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                // No Content-Type header needed for FormData
-                body: formData,
-                keepalive: true
+                body: formData
             });
-
 
             const result = await response.json();
             if (result.success) {
-                console.log('✅ Email notification sent successfully to admin!');
+                console.log('✅ Email notification sent successfully!');
             } else {
-                console.error('❌ Email sending failed. API Response:', result);
-
-                // Alert for specific issues
-                if (result.message && result.message.toLowerCase().includes('verify')) {
-                    const msg = `🔴 ATTENTION: The email address ${adminEmail} needs verification. Please check your inbox (and spam) for a verification link from Web3Forms and click it to activate the key.`;
-                    console.error(msg);
-                    // alert(msg); // Optional: alert might be too intrusive during a silent process, keep as log for now.
-                } else if (result.message && result.message.includes('rate limit')) {
-                    console.warn('⚠️ Email Rate Limit Hit.');
-                }
+                console.error('❌ Email sending failed:', result);
             }
         } catch (error) {
             console.error('❌ Error sending email:', error);
@@ -269,60 +256,39 @@ export class OrderService {
 
     private formatOrderEmail(order: Order): string {
         const isMember = order.userType === 'MEMBER';
-        const userTypeStr = isMember ? 'Gymkhana Member' : 'Guest (Non-Member)';
+        const userTypeStr = isMember ? 'Gymkhana Member' : 'Guest';
         const deliveryAction = order.deliveryMode === 'DELIVERY' ? 'Home Delivery' : 'Club House Pickup';
 
         const itemsList = order.items.map(item =>
-            `- ${item.product.name} (Size: ${item.selectedSize || 'N/A'}, Color: ${item.selectedColor || 'N/A'}) x ${item.quantity} = ₹${(item.product.price * item.quantity).toFixed(2)}`
+            `- ${item.product.name} (Qty: ${item.quantity}) - Rs.${(item.product.price * item.quantity).toFixed(2)}`
         ).join('\n');
 
         return `
-═══════════════════════════════════════
-🛍️ NEW ORDER RECEIVED
-═══════════════════════════════════════
-
-ORDER DETAILS:
---------------
-Order ID: ${order.id || 'N/A'}
-Order Date: ${order.createdAt.toLocaleString('en-IN')}
-Status: ${order.status}
-User Type: ${userTypeStr}
-
-${isMember ? `
-MEMBER INFORMATION:
--------------------
-Member ID: ${order.customerMemberId}
-Name: ${order.customerName}
-Mobile: ${order.customerMobile}
-` : `
-GUEST INFORMATION:
+NEW ORDER RECEIVED
 ------------------
-Name: ${order.customerName}
+Order ID: ${order.id}
+Status: ${order.status}
+Customer: ${order.customerName}
+Type: ${userTypeStr}
 Mobile: ${order.customerMobile}
-Address: ${order.customerAddress}
-`}
 
-DELIVERY METHOD:
----------------
-${deliveryAction}
-${order.deliveryMode === 'PICKUP' ? '(Customer will pick up from the Club House)' : `(Deliver to: ${order.customerAddress})`}
+DELIVERY:
+---------
+Method: ${deliveryAction}
+${order.deliveryMode === 'DELIVERY' ? `Address: ${order.customerAddress}` : '(Pickup at Club House)'}
 
-PRODUCTS ORDERED:
-----------------
+PRODUCTS ordered:
+-----------------
 ${itemsList}
 
 ORDER SUMMARY:
--------------
-Subtotal:        ₹${order.subtotal.toFixed(2)}
-Delivery Charge: ₹${order.deliveryCharge.toFixed(2)}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TOTAL AMOUNT:    ₹${order.total.toFixed(2)}
+--------------
+Total Amount: Rs.${order.total.toFixed(2)}
 
-═══════════════════════════════════════
-⚡ Action Required: ${deliveryAction === 'Home Delivery' ? 'Prepare order for delivery' : 'Prepare order for pickup'}
-═══════════════════════════════════════
+Action: ${deliveryAction === 'Home Delivery' ? 'Prepare for delivery' : 'Prepare for pickup'}
 
-This is an automated notification from MyGymkhanaStore.
+Sent from MyGymkhanaStore.
         `.trim();
     }
+
 }

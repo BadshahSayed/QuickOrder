@@ -76,8 +76,13 @@ export class OrderSuccessComponent implements OnInit {
             console.log('✅ Payment verified. New Order Status:', this.order.status);
             // Immediate Cart Clear - Safety double-clear
             this.cartService.clearCart();
-            this.cdr.detectChanges(); // Force UI update
-            console.log('✅ UI update triggered');
+
+            // Small delay to ensure Angular is ready for update
+            setTimeout(() => {
+              this.cdr.detectChanges();
+              console.log('✅ UI update triggered');
+            }, 100);
+
 
           } else {
             console.warn('⚠️ Payment verification returned NO order.');
