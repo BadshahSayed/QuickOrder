@@ -228,23 +228,18 @@ export class OrderService {
         try {
             console.log('📧 Sending order notification email to admin...');
 
-            const body = {
-                access_key: web3formsAccessKey,
-                subject: `🛍️ New Order #${order.id} - ${order.customerName}`,
-                from_name: 'MyGymkhanaStore - Bombay Gymkhana',
-                // address to 'to' field is optional/feature-gated on Web3Forms, 
-                // but we include it. If it fails, it goes to account owner.
-                to: adminEmail,
-                message: this.formatOrderEmail(order)
-            };
+            // Switch to FormData as per standard Web3Forms usage which is more reliable
+            const formData = new FormData();
+            formData.append('access_key', web3formsAccessKey);
+            formData.append('subject', `🛍️ New Order #${order.id} - ${order.customerName}`);
+            formData.append('from_name', 'MyGymkhanaStore - Bombay Gymkhana');
+            formData.append('to', adminEmail);
+            formData.append('message', this.formatOrderEmail(order));
 
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(body)
+                // No Content-Type header needed for FormData
+                body: formData
             });
 
             const result = await response.json();
@@ -252,18 +247,21 @@ export class OrderService {
                 console.log('✅ Email notification sent successfully to admin!');
             } else {
                 console.error('❌ Email sending failed. API Response:', result);
-                if (result.message && result.message.includes('rate limit')) {
-                    console.warn('⚠️ Email Rate Limit Hit.');
-                }
-                // Check for most common issue: Verification
+
+                // Alert for specific issues
                 if (result.message && result.message.toLowerCase().includes('verify')) {
-                    console.error('🔴 ATTENTION: Please check agm.relations@bombaygymkhana.com for a verification email from Web3Forms and click the link to activate the key.');
+                    const msg = `🔴 ATTENTION: The email address ${adminEmail} needs verification. Please check your inbox (and spam) for a verification link from Web3Forms and click it to activate the key.`;
+                    console.error(msg);
+                    // alert(msg); // Optional: alert might be too intrusive during a silent process, keep as log for now.
+                } else if (result.message && result.message.includes('rate limit')) {
+                    console.warn('⚠️ Email Rate Limit Hit.');
                 }
             }
         } catch (error) {
             console.error('❌ Error sending email:', error);
         }
     }
+
 
     private formatOrderEmail(order: Order): string {
         const isMember = order.userType === 'MEMBER';
