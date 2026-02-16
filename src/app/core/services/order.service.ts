@@ -233,9 +233,9 @@ export class OrderService {
 
             const formData = new FormData();
             formData.append('access_key', web3formsAccessKey);
-            formData.append('subject', `NEW ORDER ${order.id} - ${order.customerName}`);
+            formData.append('subject', `NEW ORDER ${order.id} for ${order.customerName}`);
             formData.append('from_name', 'MyGymkhanaStore');
-            formData.append('to', adminEmail);
+            formData.append('to', adminEmail); // Restored as it worked for QR
             formData.append('message', this.formatOrderEmail(order));
 
             const response = await fetch('https://api.web3forms.com/submit', {
@@ -256,6 +256,7 @@ export class OrderService {
             console.error('❌ Error sending email:', error);
         }
     }
+
 
 
 

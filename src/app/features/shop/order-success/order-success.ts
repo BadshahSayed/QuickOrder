@@ -84,11 +84,15 @@ export class OrderSuccessComponent implements OnInit {
             // Immediate Cart Clear
             this.cartService.clearCart();
 
+            // Force immediate UI update before navigation
+            this.cdr.detectChanges();
+
             // CLEAN URL: Redirect to self with NO params to avoid network reset issues
             this.router.navigate(['/order-success'], {
               queryParams: {},
               replaceUrl: true
             });
+
 
           } else {
             console.warn('⚠️ Payment verification returned NO order.');
@@ -99,11 +103,23 @@ export class OrderSuccessComponent implements OnInit {
           this.error = 'An error occurred during verification.';
         }
       } else {
-        // If no params, but we already have an order
+        // CLEAN URL STATE (No params)
+        console.log('✨ Clean URL state detected.');
+
+        // If we have a PAID order, trigger email and refresh UI
         if (this.order && this.order.status === 'PAID') {
           this.cartService.clearCart();
+
+          if (!this.emailSent) {
+            this.emailSent = true;
+            console.log('📧 Triggering email from clean state...');
+            this.orderService.sendEmailNotification(this.order);
+          }
         }
+
+        this.cdr.detectChanges(); // Final refresh for the clean state
       }
+
       this.loading = false;
     });
   }
