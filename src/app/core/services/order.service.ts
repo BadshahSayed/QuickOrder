@@ -250,11 +250,14 @@ export class OrderService {
             const result = await response.json();
             if (result.success) {
                 console.log('✅ Email notification sent successfully to admin!');
-                // Removed alert to prevent flow interruption
             } else {
-                console.error('❌ Email sending failed:', result);
+                console.error('❌ Email sending failed. API Response:', result);
                 if (result.message && result.message.includes('rate limit')) {
                     console.warn('⚠️ Email Rate Limit Hit.');
+                }
+                // Check for most common issue: Verification
+                if (result.message && result.message.toLowerCase().includes('verify')) {
+                    console.error('🔴 ATTENTION: Please check agm.relations@bombaygymkhana.com for a verification email from Web3Forms and click the link to activate the key.');
                 }
             }
         } catch (error) {
