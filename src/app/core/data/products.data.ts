@@ -111,14 +111,6 @@ export const PRODUCTS: Product[] = [
         price: 15,
         image: "/assets/products/Brouchure-1.jpg",
         images: ["/assets/products/Brouchure-1.jpg", "/assets/products/Brouchure-2.jpg", "/assets/products/catalog-2.jpg"]
-    },
-    {
-        id: 12,
-        name: "Test Product",
-        description: "Test Product for Payment Verification",
-        price: 1,
-        image: "/assets/products/Brouchure-1.jpg",
-        images: ["/assets/products/Brouchure-1.jpg", "/assets/products/Brouchure-2.jpg", "/assets/products/catalog-2.jpg"]
     }
 ];
 
