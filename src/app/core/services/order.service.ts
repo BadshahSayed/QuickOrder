@@ -261,8 +261,7 @@ export class OrderService {
 
 
     private formatOrderEmail(order: Order): string {
-        const isMember = order.userType === 'MEMBER';
-        const userTypeStr = isMember ? 'Gymkhana Member' : 'Guest';
+        const userTypeStr = 'Gymkhana Member';
         const deliveryAction = order.deliveryMode === 'DELIVERY' ? 'Home Delivery' : 'Club House Pickup';
 
         const itemsList = order.items.map(item =>

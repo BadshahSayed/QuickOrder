@@ -28,15 +28,15 @@ export class CheckoutComponent {
   deliveryModeSignal = signal<'PICKUP' | 'DELIVERY'>('PICKUP');
 
   // State for Membership Logic
-  showMemberPopup = true;
-  isMember: boolean | null = null;
+  showMemberPopup = false;
+  isMember = true;
 
   checkoutForm = this.fb.group({
-    memberid: [''], // Validators added dynamically
+    memberid: ['', Validators.required],
     name: ['', Validators.required],
     mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10,12}$')]],
     deliveryMode: ['PICKUP', Validators.required],
-    address: [''] // Validators added dynamically
+    address: ['']
   });
 
   // Derived state for total - now reactive with signal
@@ -56,26 +56,7 @@ export class CheckoutComponent {
     });
   }
 
-  setMemberStatus(isMember: boolean) {
-    this.isMember = isMember;
-    this.showMemberPopup = false;
-
-    const memberIdControl = this.checkoutForm.get('memberid');
-    const deliveryModeControl = this.checkoutForm.get('deliveryMode');
-
-    if (isMember) {
-      // Member Logic: ID Required
-      memberIdControl?.setValidators([Validators.required]);
-      // Members can choose both, default to PICKUP stays
-    } else {
-      // Non-Member Logic: ID not required, Delivery Only
-      memberIdControl?.clearValidators();
-      deliveryModeControl?.setValue('DELIVERY');
-    }
-
-    memberIdControl?.updateValueAndValidity();
-    this.updateAddressValidators(this.checkoutForm.get('deliveryMode')?.value || 'PICKUP');
-  }
+  // setMemberStatus removed as Guest option is no longer available
 
   private updateAddressValidators(mode: string) {
     const addressControl = this.checkoutForm.get('address');
@@ -99,7 +80,7 @@ export class CheckoutComponent {
     const deliveryCharge = isDelivery ? this.deliveryFee : 0;
 
     const order: Order = {
-      userType: this.isMember ? 'MEMBER' : 'GUEST',
+      userType: 'MEMBER',
       customerMemberId: formVal.memberid || undefined,
       customerName: formVal.name!,
       customerMobile: formVal.mobile!,

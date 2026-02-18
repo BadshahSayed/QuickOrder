@@ -20,7 +20,7 @@ export interface CartItem {
 
 export interface Order {
     id?: string;
-    userType?: 'MEMBER' | 'GUEST';
+    userType?: 'MEMBER';
     customerMemberId?: string;
     customerName: string;
     customerMobile: string;
