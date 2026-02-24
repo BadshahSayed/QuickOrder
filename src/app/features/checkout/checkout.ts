@@ -22,10 +22,7 @@ export class CheckoutComponent {
   cartItems = this.cartService.cartItems;
   subtotal = this.cartService.cartTotal;
 
-  deliveryFee = 200;
-
-  // Signal to track delivery mode for reactive total calculation
-  deliveryModeSignal = signal<'PICKUP' | 'DELIVERY'>('PICKUP');
+  deliveryFee = 0;
 
   // State for Membership Logic
   showMemberPopup = false;
@@ -35,38 +32,15 @@ export class CheckoutComponent {
     memberid: ['', Validators.required],
     name: ['', Validators.required],
     mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10,12}$')]],
-    deliveryMode: ['PICKUP', Validators.required],
-    address: ['']
+    deliveryMode: ['PICKUP', Validators.required]
   });
 
-  // Derived state for total - now reactive with signal
+  // Derived state for total
   total = computed(() => {
-    const mode = this.deliveryModeSignal();
-    const delivery = mode === 'DELIVERY' ? this.deliveryFee : 0;
-    return this.subtotal() + delivery;
+    return this.subtotal();
   });
 
-  constructor() {
-    // React to delivery mode changes to update validators or state if needed
-    this.checkoutForm.get('deliveryMode')?.valueChanges.subscribe(mode => {
-      // Update the signal to make total reactive
-      const newMode = mode as 'PICKUP' | 'DELIVERY';
-      this.deliveryModeSignal.set(newMode);
-      this.updateAddressValidators(newMode);
-    });
-  }
-
-  // setMemberStatus removed as Guest option is no longer available
-
-  private updateAddressValidators(mode: string) {
-    const addressControl = this.checkoutForm.get('address');
-    if (mode === 'DELIVERY') {
-      addressControl?.setValidators([Validators.required]);
-    } else {
-      addressControl?.clearValidators();
-    }
-    addressControl?.updateValueAndValidity();
-  }
+  constructor() { }
 
   get deliveryMode() {
     return this.checkoutForm.get('deliveryMode')?.value;
@@ -76,20 +50,19 @@ export class CheckoutComponent {
     if (this.checkoutForm.invalid) return;
 
     const formVal = this.checkoutForm.value;
-    const isDelivery = formVal.deliveryMode === 'DELIVERY';
-    const deliveryCharge = isDelivery ? this.deliveryFee : 0;
+    const deliveryCharge = 0;
 
     const order: Order = {
       userType: 'MEMBER',
       customerMemberId: formVal.memberid || undefined,
       customerName: formVal.name!,
       customerMobile: formVal.mobile!,
-      customerAddress: formVal.address || undefined,
-      deliveryMode: formVal.deliveryMode as 'PICKUP' | 'DELIVERY',
+      customerAddress: undefined,
+      deliveryMode: 'PICKUP',
       deliveryCharge: deliveryCharge,
       items: this.cartItems(),
       subtotal: this.subtotal(),
-      total: this.subtotal() + deliveryCharge,
+      total: this.subtotal(),
       status: 'PENDING',
       createdAt: new Date()
     };

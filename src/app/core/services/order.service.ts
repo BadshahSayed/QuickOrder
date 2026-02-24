@@ -183,8 +183,8 @@ export class OrderService {
 
         // Fallbacks for missing fields to match pattern "abc"
         const name = order.customerName || 'abc';
-        const email = 'abc@gmail.com'; // Hardcoded as per sample/defauilt since not captured
-        const address = order.customerAddress || 'abc'; // Use address if avail, else abc
+        const email = 'abc@gmail.com';
+        const address = 'Club House Pickup';
         const field8 = 'abc';
 
         return `${referenceNo}|${this.subMerchantId}|${amount}|${name}|a1|${email}|${address}|${field8}|${order.customerMobile}`;
@@ -261,9 +261,6 @@ export class OrderService {
 
 
     private formatOrderEmail(order: Order): string {
-        const userTypeStr = 'Gymkhana Member';
-        const deliveryAction = order.deliveryMode === 'DELIVERY' ? 'Home Delivery' : 'Club House Pickup';
-
         const itemsList = order.items.map(item =>
             `- ${item.product.name} (Qty: ${item.quantity}) - Rs.${(item.product.price * item.quantity).toFixed(2)}`
         ).join('\n');
@@ -274,13 +271,13 @@ NEW ORDER RECEIVED
 Order ID: ${order.id}
 Status: ${order.status}
 Customer: ${order.customerName}
-Type: ${userTypeStr}
+Type: Gymkhana Member
 Mobile: ${order.customerMobile}
 
 DELIVERY:
 ---------
-Method: ${deliveryAction}
-${order.deliveryMode === 'DELIVERY' ? `Address: ${order.customerAddress}` : '(Pickup at Club House)'}
+Method: Club House Pickup
+(Pickup at Club House)
 
 PRODUCTS ordered:
 -----------------
@@ -290,7 +287,7 @@ ORDER SUMMARY:
 --------------
 Total Amount: Rs.${order.total.toFixed(2)}
 
-Action: ${deliveryAction === 'Home Delivery' ? 'Prepare for delivery' : 'Prepare for pickup'}
+Action: Prepare for pickup
 
 Sent from MyGymkhanaStore.
         `.trim();
