@@ -13,5 +13,6 @@ export const routes: Routes = [
     { path: 'checkout', component: CheckoutComponent },
     { path: 'order-success', component: OrderSuccessComponent },
     { path: 'order-failure', component: OrderFailureComponent },
+    { path: 'admin/logs', loadComponent: () => import('./features/admin/admin-logs/admin-logs.component').then(m => m.AdminLogsComponent) },
     { path: '**', redirectTo: 'shop' }
 ];

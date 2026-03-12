@@ -95,8 +95,9 @@ export class OrderService {
             order.status = 'PAID';
             order.paymentId = bankRef || queryParams['Unique Ref Number'];
 
-            // Process success (clear cart, send email) immediately
+            // Process success (clear cart, send email, log order) immediately
             await this.processSuccess(order);
+            this.logOrder(order); // Non-blocking log
         } else {
             console.warn('⚠️ Payment not successful based on codes:', responseCode);
         }
@@ -212,7 +213,8 @@ export class OrderService {
         // 3. Email Notification will be triggered by the component after URL cleaning
         console.log('📧 Email notification will be triggered by component');
 
-
+        // 4. Log the order locally for admin audit
+        this.logOrder(order);
 
 
         // Navigation safety
@@ -289,8 +291,50 @@ Total Amount: Rs.${order.total.toFixed(2)}
 
 Action: Prepare for pickup
 
-Sent from MyGymkhanaStore.
-        `.trim();
+Sent from MyGymkhanaStore        `.trim();
+    }
+
+    private logOrder(order: Order) {
+        try {
+            const logsJson = localStorage.getItem('order_logs') || '[]';
+            const logs = JSON.parse(logsJson);
+
+            // Avoid duplicate logs for the same order ID
+            if (logs.find((l: any) => l.id === order.id)) {
+                return;
+            }
+
+            const logEntry = {
+                id: order.id,
+                customerName: order.customerName,
+                customerMobile: order.customerMobile,
+                total: order.total,
+                paymentId: order.paymentId || 'N/A',
+                status: order.status,
+                timestamp: new Date().toISOString()
+            };
+
+            logs.unshift(logEntry); // Add to the beginning
+
+            // Keep only the last 100 logs to prevent storage bloat
+            const trimmedLogs = logs.slice(0, 100);
+            localStorage.setItem('order_logs', JSON.stringify(trimmedLogs));
+            console.log('📝 Order logged successfully for audit.');
+        } catch (error) {
+            console.error('❌ Error logging order:', error);
+        }
+    }
+
+    getLogs(): any[] {
+        try {
+            return JSON.parse(localStorage.getItem('order_logs') || '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    clearLogs() {
+        localStorage.removeItem('order_logs');
     }
 
 }
