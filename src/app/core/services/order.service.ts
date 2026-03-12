@@ -64,9 +64,12 @@ export class OrderService {
         // 1. Retrieve the pending order
         const pendingOrderJson = sessionStorage.getItem('pending_order');
         if (!pendingOrderJson) {
-            console.error('❌ Verification Failed: No pending order found in session storage.');
+            console.log('ℹ️ Verification skipped: No pending order in session (likely already processed).');
             return null;
         }
+
+        // IMPORTANT: Remove immediately to prevent race conditions/double calls
+        sessionStorage.removeItem('pending_order');
 
         const order: Order = JSON.parse(pendingOrderJson);
 
@@ -97,17 +100,12 @@ export class OrderService {
 
             // Process success (clear cart, send email, log order) immediately
             await this.processSuccess(order);
-            this.logOrder(order); // Non-blocking log
         } else {
             console.warn('⚠️ Payment not successful based on codes:', responseCode);
         }
 
-        // 4. Clear pending order from session
-        sessionStorage.removeItem('pending_order');
-
         console.log('🏁 verifyPayment returning order with status:', order.status);
         return order;
-
     }
 
     private getParam(params: any, ...keys: string[]): string | undefined {
