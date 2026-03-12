@@ -1,4 +1,7 @@
-const { Redis } = require('@upstash/redis');
+const Redis = require('ioredis');
+
+// Shared Redis client (initialized outside the handler for connection pooling in Vercel)
+let redis;
 
 module.exports = async function handler(req, res) {
     // Handle CORS preflight
@@ -15,14 +18,17 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        // Ensure environment variables are loaded
-        if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-            throw new Error('Redis environment variables are missing. Please check your Vercel project settings.');
+        const redisUrl = process.env.REDIS_URL;
+
+        if (!redisUrl) {
+            throw new Error('REDIS_URL environment variable is missing.');
         }
 
-        const redis = Redis.fromEnv();
-        const logEntry = req.body;
+        if (!redis) {
+            redis = new Redis(redisUrl);
+        }
 
+        const logEntry = req.body;
         if (!logEntry) {
             return res.status(400).json({ error: 'Request body is empty' });
         }
@@ -36,11 +42,10 @@ module.exports = async function handler(req, res) {
         res.setHeader('Access-Control-Allow-Origin', '*');
         return res.status(200).json({ status: 'success' });
     } catch (error) {
-        console.error('Detailed Redis Error:', error);
+        console.error('Redis Cloud Error:', error);
         return res.status(500).json({
             error: 'Failed to save log',
-            message: error.message,
-            stack: error.stack
+            message: error.message
         });
     }
 }

@@ -1,4 +1,6 @@
-const { Redis } = require('@upstash/redis');
+const Redis = require('ioredis');
+
+let redis;
 
 module.exports = async function handler(req, res) {
     if (req.method === 'OPTIONS') {
@@ -14,11 +16,15 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-            throw new Error('Redis environment variables are missing.');
+        const redisUrl = process.env.REDIS_URL;
+        if (!redisUrl) {
+            throw new Error('REDIS_URL environment variable is missing.');
         }
 
-        const redis = Redis.fromEnv();
+        if (!redis) {
+            redis = new Redis(redisUrl);
+        }
+
         await redis.del('order_logs');
 
         res.setHeader('Access-Control-Allow-Origin', '*');
