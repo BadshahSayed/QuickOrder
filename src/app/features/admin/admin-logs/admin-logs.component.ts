@@ -35,14 +35,14 @@ export class AdminLogsComponent implements OnInit {
         }
     }
 
-    refreshLogs() {
-        this.logs = this.orderService.getLogs();
+    async refreshLogs() {
+        this.logs = await this.orderService.getLogs();
     }
 
-    clearAllLogs() {
+    async clearAllLogs() {
         if (confirm('Are you sure you want to clear all logs? This cannot be undone.')) {
-            this.orderService.clearLogs();
-            this.refreshLogs();
+            await this.orderService.clearLogs();
+            await this.refreshLogs();
         }
     }
 

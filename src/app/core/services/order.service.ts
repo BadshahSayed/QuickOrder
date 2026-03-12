@@ -273,6 +273,7 @@ NEW ORDER RECEIVED
 Order ID: ${order.id}
 Status: ${order.status}
 Customer: ${order.customerName}
+Member ID: ${order.customerMemberId || 'N/A'}
 Type: Gymkhana Member
 Mobile: ${order.customerMobile}
 
@@ -294,19 +295,12 @@ Action: Prepare for pickup
 Sent from MyGymkhanaStore        `.trim();
     }
 
-    private logOrder(order: Order) {
+    private async logOrder(order: Order) {
         try {
-            const logsJson = localStorage.getItem('order_logs') || '[]';
-            const logs = JSON.parse(logsJson);
-
-            // Avoid duplicate logs for the same order ID
-            if (logs.find((l: any) => l.id === order.id)) {
-                return;
-            }
-
             const logEntry = {
                 id: order.id,
                 customerName: order.customerName,
+                customerMemberId: order.customerMemberId || 'N/A',
                 customerMobile: order.customerMobile,
                 total: order.total,
                 paymentId: order.paymentId || 'N/A',
@@ -314,27 +308,39 @@ Sent from MyGymkhanaStore        `.trim();
                 timestamp: new Date().toISOString()
             };
 
-            logs.unshift(logEntry); // Add to the beginning
+            console.log('📝 Sending global log for audit:', logEntry.id);
 
-            // Keep only the last 100 logs to prevent storage bloat
-            const trimmedLogs = logs.slice(0, 100);
-            localStorage.setItem('order_logs', JSON.stringify(trimmedLogs));
-            console.log('📝 Order logged successfully for audit.');
+            const response = await fetch('/save-log.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(logEntry)
+            });
+
+            if (!response.ok) throw new Error('Failed to save global log');
+            console.log('✅ Global log saved successfully.');
         } catch (error) {
-            console.error('❌ Error logging order:', error);
+            console.error('❌ Error saving global log:', error);
         }
     }
 
-    getLogs(): any[] {
+    async getLogs(): Promise<any[]> {
         try {
-            return JSON.parse(localStorage.getItem('order_logs') || '[]');
-        } catch {
+            const response = await fetch('/get-logs.php');
+            if (!response.ok) return [];
+            return await response.json();
+        } catch (error) {
+            console.error('❌ Error fetching global logs:', error);
             return [];
         }
     }
 
-    clearLogs() {
-        localStorage.removeItem('order_logs');
+    async clearLogs() {
+        try {
+            await fetch('/clear-logs.php', { method: 'POST' });
+            console.log('🗑️ Global logs cleared.');
+        } catch (error) {
+            console.error('❌ Error clearing global logs:', error);
+        }
     }
 
 }
