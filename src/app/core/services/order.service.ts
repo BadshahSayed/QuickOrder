@@ -310,7 +310,7 @@ Sent from MyGymkhanaStore        `.trim();
 
             console.log('📝 Sending global log for audit:', logEntry.id);
 
-            const response = await fetch('/save-log.php', {
+            const response = await fetch('/api/save-order-log', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(logEntry)
@@ -325,7 +325,7 @@ Sent from MyGymkhanaStore        `.trim();
 
     async getLogs(): Promise<any[]> {
         try {
-            const response = await fetch('/get-logs.php');
+            const response = await fetch('/api/get-order-logs');
             if (!response.ok) return [];
             return await response.json();
         } catch (error) {
@@ -336,7 +336,7 @@ Sent from MyGymkhanaStore        `.trim();
 
     async clearLogs() {
         try {
-            await fetch('/clear-logs.php', { method: 'POST' });
+            await fetch('/api/clear-order-logs', { method: 'POST' });
             console.log('🗑️ Global logs cleared.');
         } catch (error) {
             console.error('❌ Error clearing global logs:', error);
