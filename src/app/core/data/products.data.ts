@@ -1,6 +1,17 @@
 import { Product } from "../models/product.model";
 
 export const PRODUCTS: Product[] = [
+
+    {
+        id: 12,
+        // New Product
+        name: "Coffee Table Book",
+        description: "From sporting triumphs to cherished traditions and storied spaces,BOMBAY GYMKHANA has had a remarkable 150-year journey.This richly illustrated 284-page, hard case book captures the people and memories that have shaped one of Mumbai’s most treasured institutions.",
+        price: 3500,
+        image: "/assets/products/Cofee-table-book.jpg",
+        images: ["/assets/products/Cofee-table-book.jpg"]
+    },
+
     {
         id: 1,
         // Old Name: Bombay Gymkhana Flask
@@ -137,15 +148,6 @@ export const PRODUCTS: Product[] = [
         price: 15,
         image: "/assets/products/Brouchure-1.jpg",
         images: ["/assets/products/Brouchure-1.jpg", "/assets/products/Brouchure-2.jpg", "/assets/products/catalog-2.jpg"]
-    },
-    {
-        id: 12,
-        // New Product
-        name: "Coffee Table Book",
-        description: "From sporting triumphs to cherished traditions and storied spaces,BOMBAY GYMKHANA has had a remarkable 150-year journey.This richly illustrated 284-page, hard case book captures the people and memories that have shaped one of Mumbai’s most treasured institutions.",
-        price: 3500,
-        image: "/assets/products/Cofee-table-book.jpg",
-        images: ["/assets/products/Cofee-table-book.jpg"]
     }
 ];
 
